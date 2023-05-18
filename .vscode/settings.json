@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "vector.h": "c",
+        "forward_list.h": "c"
+    }
+}
