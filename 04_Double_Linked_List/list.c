@@ -92,7 +92,7 @@ data_type list_get(List *l, int i){
         l->head = node_get_next(l->head);
         count++;
     }
-    return -999;
+    return NOT_FOUND;
 }
 
 data_type list_pop_front(List *l){
@@ -133,23 +133,6 @@ List *list_reverse(List *l){
         count++;
     }
     return reversed_list;
-}
-
-int list_exists(List *l, data_type val){
-    int count = 0;
-    int len = list_size(l);
-    Node* reference = l->head;
-
-    while(count < len){
-        if(node_get_data(l->head) == val){
-            l->head = reference;
-            return 1;
-        }
-        l->head = node_get_next(l->head);
-        count++;
-    }
-    l->head = reference;
-    return 0;
 }
 
 void list_remove(List *l, data_type val){

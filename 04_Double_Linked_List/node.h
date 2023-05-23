@@ -1,5 +1,6 @@
 #ifndef _NODE_H_
 #define _NODE_H_
+#define NOT_FOUND -999
 
 typedef int data_type;
 

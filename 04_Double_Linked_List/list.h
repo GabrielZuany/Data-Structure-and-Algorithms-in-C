@@ -59,6 +59,20 @@ void list_push_front(List *l, data_type data);
  */
 void list_push_back(List *l, data_type data);
 
+
+/**
+ * @brief Removes the node at the given index from the linked list.
+ *  Removes the node at the given index from the linked list and frees the memory allocated for it.
+ * @param l
+ * Pointer to the linked list.
+ * @param i
+ * Index of the node to be removed.
+ * @note
+ * The caller is responsible for freeing the memory allocated for the data stored in the node.
+ * 
+ * @note Complexity: O(1)
+ *
+ */
 data_type list_pop_back(List *l);
 
 /**
@@ -69,9 +83,21 @@ data_type list_pop_back(List *l);
  * @param print_fn
  * Pointer to the function to print data_type values.
  *
+ * @note Complexity: O(n)
  */
 void list_print(List *l, void (*print_fn)(data_type));
 
+
+/**
+ * @brief Print the elements of the linked list in reverse order.
+ *  Print the elements of the linked list in reverse order.
+ * @param l
+ * Pointer to the linked list.
+ * @param print_fn
+ * Pointer to the function to print data_type values.
+ *
+ * @note Complexity: O(n)
+ */
 void list_print_reverse(List *l, void (*print_fn)(data_type));
 
 /**
@@ -83,6 +109,7 @@ void list_print_reverse(List *l, void (*print_fn)(data_type));
  * @return data_type
  * Data stored in the node at the given index.
  *
+ * @note Complexity: O(n)
  */
 data_type list_get(List *l, int i);
 
@@ -93,6 +120,7 @@ data_type list_get(List *l, int i);
  * @return data_type
  * Pointer to the data stored in the first node of the linked list that was removed.
  *
+ * @note Complexity: O(1)
  */
 data_type list_pop_front(List *l);
 
@@ -102,18 +130,11 @@ data_type list_pop_front(List *l);
  * Pointer to the linked list.
  * @return List*
  * Pointer to the newly allocated linked list.
+ * 
+ * @note Complexity: O(n)
  */
 List *list_reverse(List *l);
 
-/**
- * @brief Removes all nodes from the linked list.
- * Removes all nodes from the linked list and frees the memory allocated for them.
- * @param l
- * Pointer to the linked list.
- * @note
- * The caller is responsible for freeing the memory allocated for the data stored in the nodes.
- */
-void list_clear(List *l);
 
 /**
  * @brief Removes all nodes with the given value from the linked list.
@@ -122,18 +143,10 @@ void list_clear(List *l);
  * Pointer to the linked list.
  * @param val
  * Value to be removed from the linked list.
+ * 
+ * @note Complexity: O(n)
  */
 void list_remove(List *l, data_type val);
-
-/**
- * @brief Removes all duplicate values from the linked list.
- * Removes all duplicate values from the linked list and frees the memory allocated for them.
- * @param l
- * Pointer to the linked list.
- * @note
- * The linked list must be sorted.
- */
-void list_unique(List *l);
 
 /**
  * @brief Adds all nodes from the given list to the end of the linked list.
@@ -141,16 +154,10 @@ void list_unique(List *l);
  * Pointer to the linked list.
  * @param m
  * Pointer to the linked list to be added to the end of the linked list.
+ * 
+ * @note Complexity: O(n)
  */
 void list_cat(List *l, List *m);
-
-/**
- * @brief Sorts the linked list.
- * Sorts the linked list.
- * @param l
- * Pointer to the linked list.
- */
-void list_sort(List *l);
 
 /**
  * @brief Destroys the linked list.
@@ -158,6 +165,7 @@ void list_sort(List *l);
  * @param l
  * Pointer to the linked list.
  *
+ * @note Complexity: O(n)
  */
 void list_destroy(List *l);
 
