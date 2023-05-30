@@ -22,6 +22,14 @@ int list_size(List *l){
     return l->size;
 }
 
+data_type list_get_first(List *l){
+    return node_get_data(l->head);
+}
+
+data_type list_get_last(List *l){
+    return node_get_data(l->last);
+}
+
 void list_push_front(List *l, data_type data){
     Node * N = node_construct(data, l->head, NULL);
     if(l->size == 0){

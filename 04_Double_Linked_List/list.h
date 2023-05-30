@@ -1,4 +1,3 @@
-
 #ifndef list_H_
 #define list_H_
 
@@ -31,6 +30,26 @@ List *list_construct();
  *
  */
 int list_size(List *l);
+
+/**
+ * @brief Returns the data stored in the first node of the linked list.
+ * 
+ * @param l 
+ * @return data_type 
+ * 
+ * @note Complexity: O(1)
+ */
+data_type list_get_first(List *l);
+
+/**
+ * @brief Returns the data stored in the last node of the linked list.
+ * 
+ * @param l 
+ * @return data_type 
+ * 
+ * @note Complexity: O(1)
+ */
+data_type list_get_last(List *l);
 
 /**
  * @brief Pushes a new node to the front of the linked list.
