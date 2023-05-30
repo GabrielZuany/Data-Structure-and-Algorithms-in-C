@@ -14,7 +14,7 @@ typedef struct Queue Queue;
  * 
  * @note Complexity: O(1)
  */
-int empty(Queue* q);
+int queue_empty(Queue* q);
 
 /**
  * @brief Get the size object
@@ -24,7 +24,7 @@ int empty(Queue* q);
  * 
  * @note Complexity: O(1)
  */
-int size(Queue* q);
+int queue_size(Queue* q);
 
 /**
  * @brief Get the first value of the queue
@@ -34,7 +34,7 @@ int size(Queue* q);
  * 
  * @note Complexity: O(1)
  */
-data_type front(Queue* q);
+data_type queue_front(Queue* q);
 
 /**
  * @brief Get the last value of the queue
@@ -44,7 +44,7 @@ data_type front(Queue* q);
  * 
  * @note Complexity: O(1)
  */
-data_type back(Queue* q);
+data_type queue_back(Queue* q);
 
 /**
  * @brief Push a new value to the back of the queue
@@ -54,7 +54,7 @@ data_type back(Queue* q);
  * 
  * @note Complexity: O(1)
  */
-void push_back(Queue* q, data_type data);
+void queue_push_back(Queue* q, data_type data);
 
 /**
  * @brief Pop the first value of the queue
@@ -63,7 +63,7 @@ void push_back(Queue* q, data_type data);
  * 
  * @note Complexity: O(1)
  */
-void pop_front(Queue* q);
+void queue_pop_front(Queue* q);
 
 
 #endif
