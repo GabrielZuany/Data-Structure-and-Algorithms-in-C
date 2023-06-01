@@ -43,6 +43,17 @@ void circular_vector_free(CircularVector *cv);
  */
 int circular_vector_size(CircularVector *cv);
 
+
+/**
+ * @brief return the allocated size of the Circular Vector object
+ * 
+ * @param cv 
+ * @return int 
+ * 
+ * @note Complexity: O(1)
+ */
+int circular_vector_allocated(CircularVector *cv);
+
 /**
  * @brief insert a new value at the end of the Circular Vector object
  * 
