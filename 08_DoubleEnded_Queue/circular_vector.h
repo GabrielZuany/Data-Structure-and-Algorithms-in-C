@@ -10,6 +10,9 @@ typedef int Bool;
 #define true 1
 #define false 0
 
+void circular_vector_shift_right(CircularVector *cv);
+void circular_vector_insert_into(CircularVector *cv, int index, int value);
+
 /**
  * @brief Set the current vector to default config (dealloc part of memory and reset to DEFAULT_CAPACITY)
  * 
@@ -118,6 +121,24 @@ void circular_vector_push_front(CircularVector *cv, int value);
 void circular_vector_pop_index(CircularVector *cv, int index);
 
 /**
+ * @brief pop the last value of the Circular Vector object
+ * 
+ * @param cv 
+ * 
+ * @note Complexity: O(1)
+ */
+void circular_vector_pop_back(CircularVector *cv);
+
+/**
+ * @brief pop the first value of the Circular Vector object
+ * 
+ * @param cv 
+ * 
+ * @note Complexity: O(1)
+ */
+void circular_vector_pop_front(CircularVector *cv);
+
+/**
  * @brief insert a new value at the index position of the Circular Vector object
  * 
  * @param cv 
@@ -167,6 +188,30 @@ void circular_vector_pop_end_ptr(CircularVector *cv);
  * @note Complexity: O(1)
  */
 int circular_vector_get(CircularVector *cv, int index);
+
+/**
+ * @brief return or set the value at the start pointer position of the Circular Vector object 
+ * 
+ * @param cv 
+ * @param mode => "get" or "set"
+ * @return int 
+ * 
+ * @note Complexity: O(1) for get
+ *       Complexity O(n) for set
+ */
+int circular_vector_first_idx_not_empty(CircularVector *cv, char *mode);
+
+/**
+ * @brief return or set the value at the end pointer position of the Circular Vector object 
+ * 
+ * @param cv 
+ * @param mode => "get" or "set"
+ * @return int 
+ * 
+ * @note Complexity: O(1) for get
+ *       Complexity O(n) for set
+ */
+int circular_vector_last_idx_not_empty(CircularVector *cv, char *mode);
 
 /**
  * @brief print the Circular Vector object

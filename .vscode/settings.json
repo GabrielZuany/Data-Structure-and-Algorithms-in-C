@@ -1,6 +1,13 @@
 {
     "files.associations": {
         "vector.h": "c",
-        "forward_list.h": "c"
+        "forward_list.h": "c",
+        "deque.h": "c",
+        "system_error": "c",
+        "array": "c",
+        "functional": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c"
     }
 }
