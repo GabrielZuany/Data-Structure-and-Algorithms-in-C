@@ -1,2 +1,0 @@
-push front
-pop front

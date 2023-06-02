@@ -1,18 +1,62 @@
 #ifndef _CIRCULAR_VECTOR_H_
 #define _CIRCULAR_VECTOR_H_
-#define TOTAL_CAPACITY 10
+#define DEFAULT_CAPACITY 5
 #define EMPTY -999
+#define null -1
 
 typedef struct CircularVector CircularVector;
 
+typedef int Bool;
+#define true 1
+#define false 0
+
 /**
- * @brief create a new Circular Vector object
+ * @brief Set the current vector to default config (dealloc part of memory and reset to DEFAULT_CAPACITY)
  * 
+ * @param cv 
+ * 
+ * @note Complexity O(n)
+ */
+void circular_vector_default(CircularVector* cv);
+
+/**
+ * @brief clear the Circular Vector object (set all values to 0)
+ * 
+ * @param cv 
+ * 
+ * @note Complexity: O(n)
+ */
+void circular_vector_clear(CircularVector* cv);
+
+/**
+ * @brief create a new Circular Vector object (static by default)
+ * 
+ * @param define_total_capacity 
  * @return CircularVector* 
  * 
  * @note Complexity: O(1)
  */
-CircularVector *circular_vector_new();
+CircularVector *circular_vector_new(int define_total_capacity);
+
+/**
+ * @brief create a new Circular Vector object (dynamic)
+ * 
+ * @param define_total_capacity 
+ * @return CircularVector* 
+ * 
+ * @note Complexity: O(1)
+ */
+CircularVector *dynamic_circular_vector_new(int define_total_capacity);
+
+/**
+ * @brief create a new Circular Vector object (static)
+ * 
+ * @param define_total_capacity 
+ * @return CircularVector* 
+ * 
+ * @note Complexity: O(1)
+ */
+CircularVector *static_circular_vector_new(int define_total_capacity);
 
 /**
  * @brief reallocate the memory for the Circular Vector object
