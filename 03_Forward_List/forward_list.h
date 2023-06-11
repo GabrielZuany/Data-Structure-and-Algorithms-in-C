@@ -1,7 +1,6 @@
 
 #ifndef _FORWARD_forward_list_H_
 #define _FORWARD_forward_list_H_
-#define NOT_FOUND -999
 
 #include "node.h"
 
@@ -41,7 +40,7 @@ int forward_list_size(ForwardList *l);
  *
  * @note Complexity: O(1)
  */
-void forward_list_push_front(ForwardList *l, data_type data);
+void forward_list_push_front(ForwardList *l, void* data);
 
 /**
  * @brief Print the elements of the linked list.
@@ -49,11 +48,11 @@ void forward_list_push_front(ForwardList *l, data_type data);
  * @param l
  * Pointer to the linked list.
  * @param print_fn
- * Pointer to the function to print data_type values.
+ * Pointer to the function to print void* values.
  *
  * @note Complexity: O(n)
  */
-void forward_list_print(ForwardList *l, void (*print_fn)(data_type));
+void forward_list_print(ForwardList *l, void (*print_fn)(void*));
 
 /**
  * @brief Returns the data stored in the node at the given index.
@@ -61,23 +60,23 @@ void forward_list_print(ForwardList *l, void (*print_fn)(data_type));
  * Pointer to the linked list.
  * @param i
  * Index of the node.
- * @return data_type
+ * @return void*
  * Data stored in the node at the given index.
  *
  * @note Complexity: O(n)
  */
-data_type forward_list_get(ForwardList *l, int i);
+void* forward_list_get(ForwardList *l, int i);
 
 /**
  * @brief Remove the first node of the linked list and returns its data.
  * @param l
  * Pointer to the linked list.
- * @return data_type
+ * @return void*
  * Pointer to the data stored in the first node of the linked list that was removed.
  *
  * @note Complexity: O(1)
  */
-data_type forward_list_pop_front(ForwardList *l);
+void* forward_list_pop_front(ForwardList *l);
 
 /**
  * @brief Create a new list given by the reverse of the given list.

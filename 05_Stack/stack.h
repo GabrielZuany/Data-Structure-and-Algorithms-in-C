@@ -3,7 +3,6 @@
 #include "../04_Double_Linked_List/list.h"
 #include "../04_Double_Linked_List/node.h"
 
-typedef int data_type;
 typedef struct Stack Stack;
 
 /**
@@ -24,18 +23,18 @@ Stack *stack_construct();
  * @note This member function effectively calls the member function push_back of the underlying container object.
  * @note Complexity: O(1)
  */
-void stack_push(Stack *s, data_type val);
+void stack_push(Stack *s, void* val);
 
 /**
  * @brief Removes the top element from the stack.
  * 
  * @param s 
- * @return data_type 
+ * @return void* 
  * 
  * @note This member function effectively calls the member function pop_back of the underlying container object.
  * @note Complexity: O(1)
  */
-data_type stack_pop(Stack *s);
+void* stack_pop(Stack *s);
 
 /**
  * @brief Prints the stack.
@@ -45,7 +44,7 @@ data_type stack_pop(Stack *s);
  * 
  * @note Complexity: O(n)
  */
-void stack_print(Stack *s, void (*print_fn)(data_type));
+void stack_print(Stack *s, void (*print_fn)(void*));
 
 /**
  * @brief Checks if the stack is empty.

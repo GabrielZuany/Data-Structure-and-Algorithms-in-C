@@ -12,15 +12,15 @@ Stack *stack_construct(){
     return s;
 }
 
-void stack_push(Stack *s, data_type val){
+void stack_push(Stack *s, void* val){
     list_push_back(s->list, val);
 }
 
-data_type stack_pop(Stack *s){
+void* stack_pop(Stack *s){
     list_pop_back(s->list);
 }
 
-void stack_print(Stack *s, void (*print_fn)(data_type)){
+void stack_print(Stack *s, void (*print_fn)(void*)){
     list_print(s->list, print_fn);
 }
 

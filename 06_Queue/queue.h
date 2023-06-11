@@ -9,8 +9,17 @@ typedef struct Queue Queue;
 /**
  * @brief Create a queue object
  * 
+ * @return Queue* 
+ * 
+ * @note Complexity: O(1)
+ */
+Queue* create_queue();
+
+/**
+ * @brief Returns 1 if the queue is empty, 0 otherwise
+ * 
  * @param q 
- * @return int boolean value
+ * @return int 
  * 
  * @note Complexity: O(1)
  */
@@ -30,21 +39,21 @@ int queue_size(Queue* q);
  * @brief Get the first value of the queue
  * 
  * @param q 
- * @return data_type 
+ * @return void* 
  * 
  * @note Complexity: O(1)
  */
-data_type queue_front(Queue* q);
+void* queue_front(Queue* q);
 
 /**
  * @brief Get the last value of the queue
  * 
  * @param q 
- * @return data_type 
+ * @return void* 
  * 
  * @note Complexity: O(1)
  */
-data_type queue_back(Queue* q);
+void* queue_back(Queue* q);
 
 /**
  * @brief Push a new value to the back of the queue
@@ -54,7 +63,7 @@ data_type queue_back(Queue* q);
  * 
  * @note Complexity: O(1)
  */
-void queue_push_back(Queue* q, data_type data);
+void enqueue(Queue* q, void* data);
 
 /**
  * @brief Pop the first value of the queue
@@ -63,7 +72,16 @@ void queue_push_back(Queue* q, data_type data);
  * 
  * @note Complexity: O(1)
  */
-void queue_pop_front(Queue* q);
+void dequeue(Queue* q);
+
+/**
+ * @brief Destroy the queue object
+ * 
+ * @param q 
+ * 
+ * @note Complexity: O(n)
+ */
+void queue_destroy(Queue* q);
 
 
 #endif

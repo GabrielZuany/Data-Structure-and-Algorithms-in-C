@@ -4,7 +4,7 @@
 #include <string.h>
 
 struct Vector{
-  data_type *data;
+  void **data;
   int size;
   int allocated;
 };
@@ -13,7 +13,7 @@ Vector *vector_construct() {
   Vector *v = (Vector *)calloc(INITIAL_CAPACITY, sizeof(Vector));
   v->size = 0;
   v->allocated = INITIAL_CAPACITY;
-  v->data = (data_type *)calloc((v->allocated), sizeof(data_type *));
+  v->data = (void **)calloc((v->allocated), sizeof(void*));
   return v;
 }
 
@@ -22,13 +22,13 @@ void vector_destroy(Vector *v) {
   free(v);
 }
 
-void vector_push_back(Vector *v, data_type val) {
+void vector_push_back(Vector *v, void* val) {
   int size = v->size;
   int allocated = v->allocated;
 
   if (allocated == size) {
     v->allocated *= 2;
-    v->data = realloc(v->data, sizeof(data_type *) * allocated);
+    v->data = realloc(v->data, sizeof(void *) * allocated);
   }
 
   v->data[size] = val;
@@ -39,15 +39,15 @@ int vector_size(Vector *v) {
   return v->size;
 }
 
-data_type vector_get(Vector *v, int i) {
+void* vector_get(Vector *v, int i) {
     return *(v->data + i); 
 }
 
-void vector_set(Vector *v, int i, data_type val) {
+void vector_set(Vector *v, int i, void* val) {
   *(v->data + i) = val;
 }
 
-int vector_find(Vector *v, data_type val) {
+int vector_find(Vector *v, void* val) {
   int length = v->size;
   int count;
 
@@ -60,10 +60,10 @@ int vector_find(Vector *v, data_type val) {
   return -1;
 }
 
-data_type vector_remove(Vector *v, int i){
+void* vector_remove(Vector *v, int i){
   int count = 0;
   int size = vector_size(v);
-  data_type val = *(v->data+i);
+  void* val = *(v->data+i);
 
   for(count=i; count<size; count++){
     *(v->data+count) = *(v->data+count+1);
@@ -72,15 +72,15 @@ data_type vector_remove(Vector *v, int i){
   return val;
 }
 
-data_type vector_pop_front(Vector *v){
+void* vector_pop_front(Vector *v){
   return vector_remove(v, 0);
 }
 
-data_type vector_pop_back(Vector *v){
+void* vector_pop_back(Vector *v){
   return vector_remove(v, vector_size(v)-1);
 }
 
-void vector_insert(Vector *v, int i, data_type val){
+void vector_insert(Vector *v, int i, void* val){
   int last_position = vector_size(v) - 1;
   int count = 0;
 
@@ -99,7 +99,7 @@ void vector_insert(Vector *v, int i, data_type val){
 }
 
 void vector_swap(Vector *v, int i, int j){
-  data_type temp;
+  void* temp;
   temp = *(v->data + i);
   *(v->data + i) = *(v->data + j);
   *(v->data + j) = temp;
@@ -147,33 +147,12 @@ void vector_bubble_sort(Vector *v){
   }while(swapped);
 }
 
-int vector_binary_search(Vector *v, data_type val){
-  int size = vector_size(v);
-  int max = size, min = 0;
-  int middle_index = 0;
+int _compare(const void* a, const void* b){
+  return (*(int*)a - *(int*)b);
+}
 
-  middle_index = size;
-
-  do{
-    middle_index = min + (max-min)/2;
-
-    if(*(v->data + middle_index) == val){
-      return middle_index;
-    }
-
-    if (val < *(v->data + middle_index)){
-      max = middle_index-1;
-      continue;
-    }
-
-    if (val > *(v->data + middle_index)){
-      min = middle_index+1;
-      continue;
-    }
-
-  }while(min<=max);
-
-  return -1;
+int vector_binary_search(Vector *v, void* val){
+  return *(int*)bsearch(val, v->data, v->size, sizeof(void*), _compare);
 }
 
 void vector_reverse(Vector *v){
@@ -192,8 +171,8 @@ Vector *vector_copy(Vector *v){
   Vector* v_copy = malloc(sizeof(Vector));
   v_copy->size = v->size;
   v_copy->allocated = v->allocated;
-  v_copy->data = calloc(sizeof(data_type), v->allocated);
-  memcpy(v_copy->data, v->data, sizeof(data_type)*v->allocated);
+  v_copy->data = calloc(sizeof(void*), v->allocated);
+  memcpy(v_copy->data, v->data, sizeof(void*)*v->allocated);
   return v_copy;
 }
 
@@ -201,11 +180,11 @@ void vector_clear(Vector *v){
   v->allocated = 0;
   v->size = 0;
   free(v->data);
-  v->data = calloc(sizeof(data_type), INITIAL_CAPACITY);
+  v->data = calloc(sizeof(void*), INITIAL_CAPACITY);
 }
 
-int* vector_find_all(Vector *v, data_type val){
-  int* idx = calloc(sizeof(data_type), v->size);
+int* vector_find_all(Vector *v, void* val){
+  int* idx = calloc(sizeof(void*), v->size);
   int idx_count = 0;
   int count = 0, size = vector_size(v);
 
@@ -216,4 +195,13 @@ int* vector_find_all(Vector *v, data_type val){
     }
   }
   return idx;
+}
+
+void vector_print(Vector *v, void (*printfn)(void*)){
+  int count = 0, size = vector_size(v);
+
+  for(count=0; count<size; count++){
+    printfn(*(v->data+count));
+  }
+  printf("\n");
 }

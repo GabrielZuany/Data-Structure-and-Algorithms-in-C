@@ -20,13 +20,13 @@ int forward_list_size(ForwardList *l){
     return l->size;
 }
 
-void forward_list_push_front(ForwardList *l, data_type data){
+void forward_list_push_front(ForwardList *l, void* data){
     Node * N = node_construct(data, l->head);
     l->head = N;
     l->size++;
 }
 
-void forward_list_print(ForwardList *l, void (*print_fn)(data_type)){
+void forward_list_print(ForwardList *l, void (*print_fn)(void*)){
     Node* reference = l->head;
 
     printf("[");
@@ -41,9 +41,9 @@ void forward_list_print(ForwardList *l, void (*print_fn)(data_type)){
     l->head = reference;
 }
 
-data_type forward_list_get(ForwardList *l, int i){
+void* forward_list_get(ForwardList *l, int i){
     int count = 0;
-    data_type val = 0;
+    void* val = 0;
     int len = forward_list_size(l);
     Node* reference = l->head;
 
@@ -56,12 +56,12 @@ data_type forward_list_get(ForwardList *l, int i){
         l->head = node_get_next(l->head);
         count++;
     }
-    return NOT_FOUND;
+    return val;
 }
 
-data_type forward_list_pop_front(ForwardList *l){
+void* forward_list_pop_front(ForwardList *l){
     Node* reference = node_get_next(l->head);
-    data_type val = node_get_value(l->head);
+    void* val = node_get_value(l->head);
     free(l->head);
 
     l->head = reference;
@@ -73,7 +73,7 @@ data_type forward_list_pop_front(ForwardList *l){
 ForwardList *forward_list_reverse(ForwardList *l){
     ForwardList* reversed_list = forward_list_construct();
     int size = forward_list_size(l), count = 0;
-    data_type value;
+    void* value;
     while(count < size){
         value = forward_list_get(l, count);
         forward_list_push_front(reversed_list, value);

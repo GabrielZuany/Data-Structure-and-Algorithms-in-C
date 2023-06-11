@@ -3,18 +3,18 @@
 
 struct Node
 {
-    data_type value;
+    void* value;
     struct Node *next;
 };
 
-Node *node_construct(data_type value, Node *next){
+Node *node_construct(void* value, Node *next){
     Node *node = (Node *)malloc(sizeof(Node));
     node->value = value;
     node->next = next;
     return node;
 }
 
-data_type node_get_value(Node *n){
+void* node_get_value(Node *n){
     return n->value;
 }
 

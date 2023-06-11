@@ -3,12 +3,12 @@
 
 struct Node
 {
-    data_type value;
+    void** value;
     struct Node *next;
     struct Node *prev;
 };
 
-Node *node_construct(data_type value, Node *next, Node *prev){
+Node *node_construct(void* value, Node *next, Node *prev){
     Node *node = (Node *)malloc(sizeof(Node));
     node->value = value;
     node->next = next;
@@ -16,7 +16,7 @@ Node *node_construct(data_type value, Node *next, Node *prev){
     return node;
 }
 
-data_type node_get_data(Node *n){
+void* node_get_data(Node *n){
     return n->value;
 }
 
@@ -28,7 +28,7 @@ Node *node_get_prev(Node *n){
     return n->prev;
 }
 
-void node_set_data(Node *n, data_type value){
+void node_set_data(Node *n, void* value){
     n->value = value;
 }
 

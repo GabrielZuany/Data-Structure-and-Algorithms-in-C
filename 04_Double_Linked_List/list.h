@@ -35,21 +35,21 @@ int list_size(List *l);
  * @brief Returns the data stored in the first node of the linked list.
  * 
  * @param l 
- * @return data_type 
+ * @return void* 
  * 
  * @note Complexity: O(1)
  */
-data_type list_get_first(List *l);
+void* list_get_first(List *l);
 
 /**
  * @brief Returns the data stored in the last node of the linked list.
  * 
  * @param l 
- * @return data_type 
+ * @return void* 
  * 
  * @note Complexity: O(1)
  */
-data_type list_get_last(List *l);
+void* list_get_last(List *l);
 
 /**
  * @brief Pushes a new node to the front of the linked list.
@@ -62,7 +62,7 @@ data_type list_get_last(List *l);
  * @note Complexity: O(1)
  *
  */
-void list_push_front(List *l, data_type data);
+void list_push_front(List *l, void* data);
 
 
 /**
@@ -76,7 +76,7 @@ void list_push_front(List *l, data_type data);
  * @note Complexity: O(1)
  *
  */
-void list_push_back(List *l, data_type data);
+void list_push_back(List *l, void* data);
 
 
 /**
@@ -92,7 +92,7 @@ void list_push_back(List *l, data_type data);
  * @note Complexity: O(1)
  *
  */
-data_type list_pop_back(List *l);
+void* list_pop_back(List *l);
 
 /**
  * @brief Print the elements of the linked list.
@@ -100,11 +100,11 @@ data_type list_pop_back(List *l);
  * @param l
  * Pointer to the linked list.
  * @param print_fn
- * Pointer to the function to print data_type values.
+ * Pointer to the function to print void* values.
  *
  * @note Complexity: O(n)
  */
-void list_print(List *l, void (*print_fn)(data_type));
+void list_print(List *l, void (*print_fn)(void*));
 
 
 /**
@@ -113,11 +113,11 @@ void list_print(List *l, void (*print_fn)(data_type));
  * @param l
  * Pointer to the linked list.
  * @param print_fn
- * Pointer to the function to print data_type values.
+ * Pointer to the function to print void* values.
  *
  * @note Complexity: O(n)
  */
-void list_print_reverse(List *l, void (*print_fn)(data_type));
+void list_print_reverse(List *l, void (*print_fn)(void*));
 
 /**
  * @brief Returns the data stored in the node at the given index.
@@ -125,23 +125,23 @@ void list_print_reverse(List *l, void (*print_fn)(data_type));
  * Pointer to the linked list.
  * @param i
  * Index of the node.
- * @return data_type
+ * @return void*
  * Data stored in the node at the given index.
  *
  * @note Complexity: O(n)
  */
-data_type list_get(List *l, int i);
+void* list_get(List *l, int i);
 
 /**
  * @brief Remove the first node of the linked list and returns its data.
  * @param l
  * Pointer to the linked list.
- * @return data_type
+ * @return void*
  * Pointer to the data stored in the first node of the linked list that was removed.
  *
  * @note Complexity: O(1)
  */
-data_type list_pop_front(List *l);
+void* list_pop_front(List *l);
 
 /**
  * @brief Create a new list given by the reverse of the given list.
@@ -165,7 +165,7 @@ List *list_reverse(List *l);
  * 
  * @note Complexity: O(n)
  */
-void list_remove(List *l, data_type val);
+void list_remove(List *l, void* val);
 
 /**
  * @brief Adds all nodes from the given list to the end of the linked list.

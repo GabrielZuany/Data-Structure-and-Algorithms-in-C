@@ -1,10 +1,7 @@
 #ifndef _NODE_H_
 #define _NODE_H_
 
-typedef int data_type;
-
 typedef struct Node Node;
-
 
 /**
  * @brief Construct a new Node 
@@ -15,18 +12,18 @@ typedef struct Node Node;
  * 
  * @note Complexity: O(1)
  */
-Node *node_construct(data_type value, Node *next);
+Node *node_construct(void* value, Node *next);
 
 
 /**
  * @brief Returns the data stored in the node.
  * 
  * @param n 
- * @return data_type 
+ * @return void* 
  * 
  * @note Complexity: O(1)
  */
-data_type node_get_value(Node *n);
+void* node_get_value(Node *n);
 
 
 /**

@@ -22,15 +22,15 @@ int list_size(List *l){
     return l->size;
 }
 
-data_type list_get_first(List *l){
+void* list_get_first(List *l){
     return node_get_data(l->head);
 }
 
-data_type list_get_last(List *l){
+void* list_get_last(List *l){
     return node_get_data(l->last);
 }
 
-void list_push_front(List *l, data_type data){
+void list_push_front(List *l, void* data){
     Node * N = node_construct(data, l->head, NULL);
     if(l->size == 0){
         l->head = N;
@@ -43,7 +43,7 @@ void list_push_front(List *l, data_type data){
     
 }
 
-void list_push_back(List *l, data_type data){
+void list_push_back(List *l, void* data){
     Node * N = node_construct(data, NULL, l->last);
     if(l->size == 0){
         l->head = N;
@@ -56,7 +56,7 @@ void list_push_back(List *l, data_type data){
     l->size++;
 }
 
-void list_print(List *l, void (*print_fn)(data_type)){
+void list_print(List *l, void (*print_fn)(void*)){
     Node* reference = l->head;
 
     printf("[");
@@ -71,7 +71,7 @@ void list_print(List *l, void (*print_fn)(data_type)){
     l->head = reference;
 }
 
-void list_print_reverse(List *l, void (*print_fn)(data_type)){
+void list_print_reverse(List *l, void (*print_fn)(void*)){
     Node* last_ref = l->last;
 
     printf("[");
@@ -85,9 +85,9 @@ void list_print_reverse(List *l, void (*print_fn)(data_type)){
     printf("]");
 }
 
-data_type list_get(List *l, int i){
+void* list_get(List *l, int i){
     int count = 0;
-    data_type val = 0;
+    void* val = 0;
     int len = list_size(l);
     Node* reference = l->head;
 
@@ -100,12 +100,12 @@ data_type list_get(List *l, int i){
         l->head = node_get_next(l->head);
         count++;
     }
-    return NOT_FOUND;
+    return val;
 }
 
-data_type list_pop_front(List *l){
+void* list_pop_front(List *l){
     Node* reference = node_get_next(l->head);
-    data_type val = node_get_data(l->head);
+    void* val = node_get_data(l->head);
     
     free(l->head);
 
@@ -117,9 +117,9 @@ data_type list_pop_front(List *l){
     return val;
 }
 
-data_type list_pop_back(List *l){
+void* list_pop_back(List *l){
     Node* reference = node_get_prev(l->last);
-    data_type val = node_get_data(l->last);
+    void* val = node_get_data(l->last);
     
     free(l->last);
 
@@ -134,7 +134,7 @@ data_type list_pop_back(List *l){
 List *list_reverse(List *l){
     List* reversed_list = list_construct();
     int size = list_size(l), count = 0;
-    data_type value;
+    void* value;
     while(count < size){
         value = list_get(l, count);
         list_push_front(reversed_list, value);
@@ -143,7 +143,7 @@ List *list_reverse(List *l){
     return reversed_list;
 }
 
-void list_remove(List *l, data_type val){
+void list_remove(List *l, void* val){
     Node *n = l->head, *prev = NULL,*new_n = NULL;
 
     while (n != NULL) {

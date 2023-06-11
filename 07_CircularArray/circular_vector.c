@@ -4,7 +4,7 @@
 #include <string.h>
 
 struct CircularVector {
-    int *vector;
+    void **vector;
     int idx_front;
     int idx_rear;
     int size;
@@ -18,7 +18,7 @@ CircularVector *circular_vector_new(int define_total_capacity) {
         define_total_capacity = DEFAULT_CAPACITY;
     }
     CircularVector *cv = (CircularVector*)calloc(1, sizeof(CircularVector));
-    cv->vector = (int*)calloc(sizeof(int), define_total_capacity);
+    cv->vector = (void**)calloc(sizeof(void*), define_total_capacity);
     cv->idx_front = 0;
     cv->idx_rear = 0;
     cv->size = 0;
@@ -44,8 +44,8 @@ void circular_vector_clear(CircularVector* cv){
 }
 
 void circular_vector_default(CircularVector* cv){
-    cv->vector = (int*)realloc(cv->vector, sizeof(int)*DEFAULT_CAPACITY);
-    memset(cv->vector, 0, sizeof(int)*DEFAULT_CAPACITY);
+    cv->vector = (void**)realloc(cv->vector, sizeof(void*)*DEFAULT_CAPACITY);
+    memset(cv->vector, 0, sizeof(void*)*DEFAULT_CAPACITY);
     cv->allocated = DEFAULT_CAPACITY;
     cv->idx_front = 0;
     cv->idx_rear = 0;
@@ -53,8 +53,8 @@ void circular_vector_default(CircularVector* cv){
 }
 
 void *circular_vector_realloc(CircularVector *cv){
-    int* cpy = (int*)calloc(sizeof(int), 2*cv->allocated);
-    memmove(cpy, cv->vector, sizeof(int)*cv->allocated);
+    void** cpy = (void**)calloc(sizeof(void*), 2*cv->allocated);
+    memmove(cpy, cv->vector, sizeof(void*)*cv->allocated);
     free(cv->vector);
     cv->vector = cpy;
     cv->allocated *= 2;
@@ -71,7 +71,7 @@ int circular_vector_size(CircularVector *cv) {
     return cv->size;
 }
 
-void circular_vector_push_back(CircularVector *cv, int value) {
+void circular_vector_push_back(CircularVector *cv, void* value) {
     if(cv->size == cv->allocated && !g_static_vector){
         circular_vector_realloc(cv);
     }
@@ -92,7 +92,7 @@ void circular_vector_push_back(CircularVector *cv, int value) {
     cv->size++;
 }
 
-void circular_vector_push_front(CircularVector *cv, int value) {
+void circular_vector_push_front(CircularVector *cv, void* value) {
     if(cv->size == cv->allocated && !g_static_vector){
         circular_vector_realloc(cv);
     }
@@ -111,7 +111,7 @@ void circular_vector_push_front(CircularVector *cv, int value) {
 }
 
 void circular_vector_pop_end_ptr(CircularVector *cv) {
-    cv->vector[cv->idx_rear] = EMPTY;
+    cv->vector[cv->idx_rear] = NULL;
     if(cv->idx_rear - 1 < 0) {
         cv->idx_rear = cv->allocated - 1;
     } else {
@@ -123,7 +123,7 @@ void circular_vector_pop_end_ptr(CircularVector *cv) {
 }
 
 void circular_vector_pop_init_ptr(CircularVector *cv) {
-    cv->vector[cv->idx_front] = EMPTY;
+    cv->vector[cv->idx_front] = NULL;
     if(cv->idx_front + 1 == cv->allocated) {
         cv->idx_front = 0;
     } else {
@@ -135,7 +135,7 @@ void circular_vector_pop_init_ptr(CircularVector *cv) {
 }
 
 void circular_vector_pop_index(CircularVector *cv, int index) {
-    cv->vector[index] = EMPTY;
+    cv->vector[index] = NULL;
     if(cv->size > 0) {
         cv->size--;
     }
@@ -154,21 +154,14 @@ void circular_vector_fix_init_ptr(CircularVector *cv) {
     cv->idx_front = 0;
 }
 
-int circular_vector_get(CircularVector *cv, int index) {
+void* circular_vector_get(CircularVector *cv, int index) {
     return cv->vector[index];
 }
 
-void circular_vector_print(CircularVector *cv) {
-    printf(">>> INIT PTR: %d\n>>> END PTR: %d\n", cv->idx_front, cv->idx_rear);
-    printf(">>> INIT PTR VALUE: %d\n>>> END PTR VALUE: %d\n", cv->vector[cv->idx_front], cv->vector[cv->idx_rear]);
-
+void circular_vector_print(CircularVector *cv, void(*printfn)(void*)) {
     printf("[");
     for(int i = 0; i < cv->allocated; i++) {
-        if(circular_vector_get(cv, i) != EMPTY){
-            printf("%d ", circular_vector_get(cv, i));
-        }else{
-            printf(" EMPTY ");
-        }
+        printfn(circular_vector_get(cv, i));
     }
     printf("]\n");
 }

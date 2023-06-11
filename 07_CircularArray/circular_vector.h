@@ -95,7 +95,7 @@ int circular_vector_size(CircularVector *cv);
  * 
  * @note Complexity: O(1)
  */
-void circular_vector_push_back(CircularVector *cv, int value);
+void circular_vector_push_back(CircularVector *cv, void* value);
 
 /**
  * @brief insert a new value at the start of the Circular Vector object
@@ -105,7 +105,7 @@ void circular_vector_push_back(CircularVector *cv, int value);
  * 
  * @note Complexity: O(1)
  */
-void circular_vector_push_front(CircularVector *cv, int value);
+void circular_vector_push_front(CircularVector *cv, void* value);
 
 /**
  * @brief remove the value at the index position of the Circular Vector object
@@ -166,7 +166,7 @@ void circular_vector_pop_end_ptr(CircularVector *cv);
  * 
  * @note Complexity: O(1)
  */
-int circular_vector_get(CircularVector *cv, int index);
+void* circular_vector_get(CircularVector *cv, int index);
 
 /**
  * @brief print the Circular Vector object
@@ -175,6 +175,5 @@ int circular_vector_get(CircularVector *cv, int index);
  * 
  * @note Complexity: O(n)
  */
-void circular_vector_print(CircularVector *cv);
-
+void circular_vector_print(CircularVector *cv, void(*printfn)(void*));
 #endif

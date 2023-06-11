@@ -1,201 +1,212 @@
-#ifndef _ED_VECTOR_H_
-#define _ED_VECTOR_H_
+#ifndef VECTOR_H
+#define VECTOR_H
 #define INITIAL_CAPACITY 10
-typedef int data_type;
+
+/**
+ * @brief Vector data structure.
+ */
 typedef struct Vector Vector;
 
 /**
- * @brief Construct a new Vector "object"
+ * @brief Constructs a new vector.
  * 
- * @return Vector*
+ * @return Pointer to the newly created vector.
  * 
  * @note Complexity: O(1)
  */
 Vector *vector_construct();
 
 /**
- * @brief Destroy the Vector "object".
+ * @brief Destroys the vector and frees the associated memory.
  * 
- * @param v Vector to be destroyed.
+ * @param v Pointer to the vector to be destroyed.
  * 
- * @note Complexity: O(1) 
+ * @note Complexity: O(n)
  */
 void vector_destroy(Vector *v);
 
 /**
- * @brief Add a new element to the end of the vector.
+ * @brief Adds an element to the end of the vector.
  * 
- * @param v Vector to be modified.
- * @param val value to be added.
+ * @param v Pointer to the vector.
+ * @param val Pointer to the value to be added.
  * 
- * @note Complexity: O(1) amortized (because of realloc)
+ * @note Complexity: O(1) amortized
  */
-void vector_push_back(Vector *v, data_type val);
+void vector_push_back(Vector *v, void* val);
 
 /**
  * @brief Returns the number of elements in the vector.
  * 
  * @param v Vector to be checked.
- * @return int size of the vector.
+ * @return int Size of the vector.
  * 
  * @note Complexity: O(1)
  */
 int vector_size(Vector *v);
 
 /**
- * @brief Returns the i-th element of the vector.
+ * @brief Returns the element at the specified index in the vector.
  * 
- * @param v vector to be checked.
- * @param i index of the element.
- * @return data_type value of the element.
- * 
- * @note Complexity: O(1)
- */
-data_type vector_get(Vector *v, int i);
-
-/**
- * @brief Set the i-th element of the vector.
- * 
- * @param v vector to be modified.
- * @param i index of the element.
- * @param val value to be set.
+ * @param v Pointer to the vector.
+ * @param i Index of the element to retrieve.
+ * @return void* Pointer to the element.
  * 
  * @note Complexity: O(1)
  */
-void vector_set(Vector *v, int i, data_type val);
+void* vector_get(Vector *v, int i);
 
 /**
- * @brief Returns the index of the first occurrence of val in the vector.
+ * @brief Sets the value of the element at the specified index in the vector.
  * 
- * @param v vector to be checked.
- * @param val value to be found.
- * @return int value of the index.
- * 
- * @note Complexity: O(n) => depends on the size of the vector.
- */
-int vector_find(Vector *v, data_type val);
-
-/**
- * @brief Remove the i-th element of the vector.
- * 
- * @param v vector to be modified.
- * @param i index of the element.
- * @return data_type value of the removed element.
- * 
- * @note Complexity: O(n) => depends on the size of the vector.
- */
-data_type vector_remove(Vector *v, int i); 
-
-/**
- * @brief Remove the first occurrence of val in the vector.
- * 
- * @param v vector to be modified.
- * @return data_type value of the removed element.
- * 
- * @note Complexity: O(n) => depends on the size of the vector.
- */
-data_type vector_pop_front(Vector *v); 
-
-/**
- * @brief Remove the last element of the vector.
- * 
- * @param v vector to be modified.
- * @return data_type value of the removed element.
+ * @param v Pointer to the vector.
+ * @param i Index of the element to set.
+ * @param val Pointer to the value to be set.
  * 
  * @note Complexity: O(1)
  */
-data_type vector_pop_back(Vector *v); 
+void vector_set(Vector *v, int i, void* val);
 
 /**
- * @brief Insert val at the beginning of the vector.
+ * @brief Finds the first occurrence of the specified value in the vector.
  * 
- * @param v vector to be modified.
- * @param i index of the element.
- * @param val value to be inserted.
+ * @param v Pointer to the vector.
+ * @param val Pointer to the value to be found.
+ * @return int Index of the first occurrence of the value, or -1 if not found.
  * 
- * @note Complexity: O(n) => depends on the size of the vector.
+ * @note Complexity: O(n)
  */
-void vector_insert(Vector *v, int i, data_type val); 
+int vector_find(Vector *v, void* val);
 
 /**
- * @brief Insert val at the end of the vector.
+ * @brief Removes the element at the specified index from the vector.
  * 
- * @param v vector to be modified.
- * @param i index of 1st element.
- * @param j index of 2nd element.
+ * @param v Pointer to the vector.
+ * @param i Index of the element to remove.
+ * @return void* Pointer to the removed element.
+ * 
+ * @note Complexity: O(n)
+ */
+void* vector_remove(Vector *v, int i);
+
+/**
+ * @brief Removes and returns the element at the front of the vector.
+ * 
+ * @param v Pointer to the vector.
+ * @return void* Pointer to the removed element.
+ * 
+ * @note Complexity: O(n)
+ */
+void* vector_pop_front(Vector *v);
+
+/**
+ * @brief Removes and returns the element at the end of the vector.
+ * 
+ * @param v Pointer to the vector.
+ * @return void* Pointer to the removed element.
  * 
  * @note Complexity: O(1)
  */
-void vector_swap(Vector *v, int i, int j); 
+void* vector_pop_back(Vector *v);
 
 /**
- * @brief Sort the vector.
+ * @brief Inserts a value at the specified index in the vector.
  * 
- * @param v vector to be sorted.
+ * @param v Pointer to the vector.
+ * @param i Index at which the value should be inserted.
+ * @param val Pointer to the value to be inserted.
  * 
- * @note Complexity: O(n^2) => depends on the size of the vector.
- * @note Uses a different implementation of bubble sort.
+ * @note Complexity: O(n)
+ */
+void vector_insert(Vector *v, int i, void* val);
+
+/**
+ * @brief Swaps the positions of two elements in the vector.
+ * 
+ * @param v Pointer to the vector.
+ * @param i Index of the first element.
+ * @param j Index of the second element.
+ * 
+ * @note Complexity: O(1)
+ */
+void vector_swap(Vector *v, int i, int j);
+
+/**
+ * @brief Sorts the elements in the vector in ascending order.
+ * 
+ * @param v Pointer to the vector.
+ * 
+ * @note Complexity: O(n^2)
  */
 void vector_sort(Vector *v);
 
 /**
- * @brief Sort the vector using bubble sort.
+ * @brief Sorts the elements in the vector using the bubble sort algorithm.
  * 
- * @param v vector to be sorted.
+ * @param v Pointer to the vector.
  * 
- * @note Complexity: O(n^2) => depends on the size of the vector.
+ * @note Complexity: O(n^2)
  */
 void vector_bubble_sort(Vector *v);
 
 /**
- * @brief Binary search for val in the vector.
+ * @brief Performs a binary search on the vector to find the specified value.
  * 
- * @param v vector to be searched.
- * @param val value to be found.
- * @return int index of the element.
+ * @param v Pointer to the vector.
+ * @param val Pointer to the value to be searched.
+ * @return int Index of the found value, or -1 if not found.
  * 
- * @note Complexity: O(log n) => depends on the size of the vector.
+ * @note Complexity: O(log n)
  */
-int vector_binary_search(Vector *v, data_type val);
+int vector_binary_search(Vector *v, void* val);
 
 /**
- * @brief Reverse the vector.
+ * @brief Reverses the order of elements in the vector.
  * 
- * @param v vector to be reversed.
+ * @param v Pointer to the vector.
  * 
- * @note Complexity: O(n) => depends on the size of the vector.
+ * @note Complexity: O(n)
  */
-void vector_reverse(Vector *v); 
+void vector_reverse(Vector *v);
 
 /**
- * @brief Copy the vector.
+ * @brief Creates a copy of the vector.
  * 
- * @param v vector to be copied.
- * @return Vector* 
+ * @param v Pointer to the vector to be copied.
+ * @return Pointer to the newly created copy of the vector.
  * 
- * @note Complexity: O(n) => depends on the size of the vector.
- * @note Uses memcpy.
+ * @note Complexity: O(n)
  */
-Vector *vector_copy(Vector *v); 
+Vector *vector_copy(Vector *v);
 
 /**
- * @brief Clear the vector.
+ * @brief Removes all elements from the vector.
  * 
- * @param v vector to be cleared.
+ * @param v Pointer to the vector.
  * 
  * @note Complexity: O(1)
  */
 void vector_clear(Vector *v);
 
 /**
- * @brief Find all occurrences of val in the vector
+ * @brief Finds all occurrences of the specified value in the vector and returns their indices.
  * 
- * @param v vector to be searched.
- * @param val value to be found.
- * @return int* array of indexes.
+ * @param v Pointer to the vector.
+ * @param val Pointer to the value to be found.
+ * @return int* Array of indices of the occurrences.
  * 
- * @note Complexity: O(n) => depends on the size of the vector.
+ * @note Complexity: O(n)
  */
-int* vector_find_all(Vector *v, data_type val);
+int* vector_find_all(Vector *v, void* val);
 
-#endif
+/**
+ * @brief Prints the elements of the vector using the specified print function.
+ * 
+ * @param v Pointer to the vector.
+ * @param printfn Function pointer to the print function.
+ * 
+ * @note Complexity: O(n)
+ */
+void vector_print(Vector *v, void (*printfn)(void*));
+
+#endif 

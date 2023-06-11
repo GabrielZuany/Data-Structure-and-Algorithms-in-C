@@ -20,22 +20,22 @@ int queue_size(Queue* q){
     return list_size(q->list);
 }
 
-data_type queue_front(Queue* q){
+void* queue_front(Queue* q){
     return list_get_first(q->list);
 }
 
-data_type queue_back(Queue* q){
+void* queue_back(Queue* q){
     return list_get_last(q->list);
 }
-void queue_push_back(Queue* q, data_type data){
+void enqueue(Queue* q, void* data){
     list_push_back(q->list, data);
 }
 
-void queue_pop_front(Queue* q){
+void dequeue(Queue* q){
     list_pop_front(q->list);
 }
 
-void queue_queue_destroy(Queue* q){
+void queue_destroy(Queue* q){
     list_destroy(q->list);
     free(q);
 }

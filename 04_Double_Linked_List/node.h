@@ -1,8 +1,5 @@
 #ifndef _NODE_H_
 #define _NODE_H_
-#define NOT_FOUND -999
-
-typedef int data_type;
 
 typedef struct Node Node;
 
@@ -16,17 +13,17 @@ typedef struct Node Node;
  * 
  * @note Complexity: O(1)
  */
-Node *node_construct(data_type value, Node *next, Node* prev);
+Node *node_construct(void* value, Node *next, Node* prev);
 
 /**
  * @brief Get the data object
  * 
  * @param n 
- * @return data_type 
+ * @return void* 
  * 
  * @note Complexity: O(1)
  */
-data_type node_get_data(Node *n);
+void* node_get_data(Node *n);
 
 /**
  * @brief Get the next object
@@ -56,7 +53,7 @@ Node *node_get_prev(Node *n);
  * 
  * @note Complexity: O(1)
  */
-void node_set_data(Node *n, data_type value);
+void node_set_data(Node *n, void* value);
 
 /**
  * @brief Set the next object
