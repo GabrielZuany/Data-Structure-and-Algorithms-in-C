@@ -8,14 +8,14 @@ void deque_destroy(Deque* d);
 
 int deque_empty(Deque* d);
 
-void deque_push_front(Deque*d, int data);
+void deque_push_front(Deque* d, void* data);
 
-void deque_push_back(Deque*d, int data);
+void deque_push_back(Deque* d, void* data);
 
-void deque_print(Deque* d);
+void deque_print(Deque* d, void (*print)(void*));
 
-int deque_pop_front(Deque* d);
+void* deque_pop_front(Deque* d);
 
-int deque_pop_back(Deque* d);
+void* deque_pop_back(Deque* d);
 
 #endif

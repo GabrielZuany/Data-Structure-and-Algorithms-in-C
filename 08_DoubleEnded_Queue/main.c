@@ -1,30 +1,69 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "deque.h"
+#include <string.h>
 
-int main(){
-    Deque* d = deque_create();
+typedef struct
+{
+    int x, y;
+} Celula;
 
-    for(int i = 0; i<13; i++){
-        deque_push_front(d, i + 1);
-        deque_print(d);
+Celula *celula_create(int x, int y)
+{
+    Celula *c = malloc(sizeof(Celula));
+    c->x = x;
+    c->y = y;
+    return c;
+}
+
+void celula_free(Celula *c)
+{
+    free(c);
+}
+
+//celula_print function to be passed as parameter to deque_print
+void celula_print(void *c)
+{
+    Celula *cel = c;
+    printf("(%d,%d)", cel->x, cel->y);
+}
+
+int main()
+{
+    int i, n, x, y;
+    char cmd[10];
+    Deque *d = deque_create();
+
+    scanf("%d", &n);
+
+    for (i = 0; i < n; i++)
+    {
+        scanf("\n%s", cmd);
+
+        if (!strcmp(cmd, "PUSH_BACK"))
+        {
+            scanf("%d %d", &x, &y);
+            deque_push_front(d, celula_create(x, y));
+        }
+        else if (!strcmp(cmd, "PUSH_FRONT"))
+        {
+            scanf("%d %d", &x, &y);
+            deque_push_back(d, celula_create(x, y));
+        }
+        else if (!strcmp(cmd, "POP_BACK"))
+        {
+            Celula *c = deque_pop_front(d);
+            printf("%d %d\n", c->x, c->y);
+            celula_free(c);
+        }
+        else if (!strcmp(cmd, "POP_FRONT"))
+        {
+            Celula *c = deque_pop_back(d);
+            printf("%d %d\n", c->x, c->y);
+            celula_free(c);
+        }   
     }
 
-    for(int i = 0; i<12; i++){
-        deque_push_back(d, i + 1);
-        deque_print(d);
-    }
-
-    printf("=========\n\n\nPOP:\n");
-    for(int i = 0; i<13; i++){
-        printf(">>>%d\n",deque_pop_back(d));
-        deque_print(d);
-    }
-    for(int i = 0; i<12; i++){
-        printf(">>>%d\n",deque_pop_front(d));
-        deque_print(d);
-    }
-    
     deque_destroy(d);
     return 0;
 }
