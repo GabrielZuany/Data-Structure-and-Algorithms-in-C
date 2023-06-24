@@ -5,9 +5,9 @@
 #define CHUNKS 5
 
 typedef struct chunk {
-    int* data_array; // array of data
+    int* data_array;  // array of data
     int _size;        // actual size
-    int idx_init;    // initial index
+    int idx_init;     // initial index
     int idx_end; 
 } chunk;
 
@@ -17,10 +17,8 @@ typedef struct Deque {
     int _tchunks;         // total chunks
     int size;             // deque size
     int allocated;        // total allocated
-    chunk* _front;        // front chunk
-    chunk* _rear;         // rear chunk
-    int front_idx;        // front index
-    int rear_idx;         // rear index
+    int front_chunk_idx;        // front index
+    int rear_chunk_idx;         // rear index
 } Deque;
 
 
@@ -37,15 +35,13 @@ void chunk_push_front(chunk* c, int data) {
     if (c->_size == CHUNK_SIZE) {
         return;
     }
-   
-    if(c->idx_init == 0){
-        c->data_array[c->idx_init] = data;
-        c->idx_init = CHUNK_SIZE - 1;
-    }
-    else{
+    if(c->idx_init == 0 && c->idx_end == 0){
+        c->data_array[0] = data;
+        c->idx_init--;
+        c->idx_end = 1;
+    }else if(c->idx_init >= 0 && c->idx_init < CHUNK_SIZE){
         c->data_array[c->idx_init] = data;
         c->idx_init--;
-        
     }
     c->_size++;
 }
@@ -54,12 +50,11 @@ void chunk_push_back(chunk* c, int data) {
     if (c->_size == CHUNK_SIZE) {
         return;
     }
-    
-    if(c->idx_end == CHUNK_SIZE - 1){
-        c->data_array[c->idx_end] = data;
-        c->idx_end = 0;
-    }
-    else{
+    if(c->idx_init == 0 && c->idx_end == 0){
+        c->data_array[0] = data;
+        c->idx_init--;
+        c->idx_end = 1;
+    }else if(c->idx_end < CHUNK_SIZE && c->idx_end >= 0){
         c->data_array[c->idx_end] = data;
         c->idx_end++;
     }
@@ -113,8 +108,12 @@ int chunk_insert_last_position(chunk* c, int data) {
         return -1;
     }
 
-    c->idx_init = CHUNK_SIZE - 2;
-    c->idx_end = 0;
+    if(c->idx_init == -1 && c->idx_end == 1){
+        c->idx_init = 1;
+    }else{
+        c->idx_init = CHUNK_SIZE - 2;
+    }
+    c->idx_end = CHUNK_SIZE - 2;
       
     c->data_array[CHUNK_SIZE - 1] = data;
     c->_size++;
@@ -125,10 +124,13 @@ int chunk_insert_first_position(chunk* c, int data) {
     if (c->_size == CHUNK_SIZE) {
         return -1;
     }
-    c->idx_init = 0;
-    c->idx_end = 1;
+    if(c->idx_init == 0 && c->idx_end == 0){
+        c->idx_init = -1;
+        c->idx_end = 1;
+    }else{
+        c->idx_end = 1;
+    }
     
-        
     c->data_array[0] = data;
     c->_size++;
     return 0;
@@ -146,7 +148,6 @@ void chunk_destroy(chunk c) {
     free(c.data_array);
 }
 
-
 //------------------------------------------------
 
 
@@ -159,10 +160,8 @@ Deque* deque_create() {
     d->_tchunks = CHUNKS * CHUNK_SIZE;
     d->size = 0;
     d->allocated = CHUNKS;
-    d->_front = NULL;
-    d->_rear = NULL;
-    d->front_idx = CHUNKS/2;
-    d->rear_idx = CHUNKS/2;
+    d->front_chunk_idx = CHUNKS/2;
+    d->rear_chunk_idx = CHUNKS/2;
     return d;
 }
 
@@ -179,41 +178,40 @@ int deque_empty(Deque* d) {
 }
 
 void deque_push_front(Deque*d, int data){
-    int curr_chunk_size = chunk_size(d->chunks[d->front_idx]);
+    int curr_chunk_size = chunk_size(d->chunks[d->front_chunk_idx]);
     
-    if(curr_chunk_size == CHUNK_SIZE){
-        printf("NOT THERE\n");
-        int next_free_chunk = d->front_idx - 1;
+    if(curr_chunk_size == CHUNK_SIZE || d->chunks[d->front_chunk_idx].idx_init < 0){
+        int next_free_chunk = d->front_chunk_idx - 1;
 
         if(next_free_chunk == -1){
             next_free_chunk = CHUNKS - 1;
         }
-            
+        
         chunk_insert_last_position(&(d->chunks[next_free_chunk]), data);
-        d->front_idx = next_free_chunk;
+        d->front_chunk_idx = next_free_chunk;
         
     }else{
-        printf("HERE\n");
-        chunk_push_front(&(d->chunks[d->front_idx]), data); 
+        chunk_push_front(&(d->chunks[d->front_chunk_idx]), data); 
     }   
+    d->size++;
 }
 
 void deque_push_back(Deque*d, int data){
-    int curr_chunk_size = chunk_size(d->chunks[d->rear_idx]);
+    int curr_chunk_size = chunk_size(d->chunks[d->rear_chunk_idx]);
 
-    if(curr_chunk_size == CHUNK_SIZE){
-        int next_free_chunk = d->rear_idx + 1;
+    if(curr_chunk_size == CHUNK_SIZE || d->chunks[d->rear_chunk_idx].idx_end == CHUNK_SIZE){
+        int next_free_chunk = d->rear_chunk_idx + 1;
 
         if(next_free_chunk == CHUNKS){
             next_free_chunk = 0;
         }
             
         chunk_insert_first_position(&(d->chunks[next_free_chunk]), data);
-
-        d->rear_idx = next_free_chunk;
+        d->rear_chunk_idx = next_free_chunk;
     }else{
-       chunk_push_back(&(d->chunks[d->rear_idx]), data); 
-    }   
+        chunk_push_back(&(d->chunks[d->rear_chunk_idx]), data);   
+    }  
+    d->size++;
 }
 
 void deque_print(Deque* d) {
@@ -221,6 +219,89 @@ void deque_print(Deque* d) {
         printf("Chunk (%d): ", i);
         chunk_print(d->chunks[i]);
         printf("\n");
-    }
+        }
+
+        printf("front chunk idx: %d\n", d->front_chunk_idx);
+        printf("front chunk init: %d\n", d->chunks[d->front_chunk_idx].idx_init);
+        printf("front chunk end: %d\n", d->chunks[d->front_chunk_idx].idx_end);
+        printf("front chunk size: %d\n", d->chunks[d->front_chunk_idx]._size);
+
+        printf("rear chunk idx: %d\n", d->rear_chunk_idx);
+        printf("rear chunk init: %d\n", d->chunks[d->rear_chunk_idx].idx_init);
+        printf("rear chunk end: %d\n", d->chunks[d->rear_chunk_idx].idx_end);
+        printf("rear chunk size: %d\n", d->chunks[d->rear_chunk_idx]._size);
+
+        printf("\n");
     printf("\n");
+}
+
+
+int deque_pop_front(Deque* d){
+    int data = -1;
+    if(deque_empty(d)){
+        return -1;
+    }else{
+        if(d->chunks[d->front_chunk_idx].idx_init + 1 >= CHUNK_SIZE){
+            if(d->front_chunk_idx == CHUNKS - 1){
+                d->front_chunk_idx = 0;
+            }else{
+                d->front_chunk_idx++;
+            }
+            int data_index = d->chunks[d->front_chunk_idx].idx_init;
+            int chunk_index = d->front_chunk_idx;
+
+            if(data_index == -1){
+                data_index = 0;
+            }
+            data = d->chunks[chunk_index].data_array[data_index];
+            d->chunks[chunk_index].data_array[data_index] = 0;
+            d->chunks[chunk_index].idx_init = data_index;
+            d->chunks[chunk_index]._size--;
+            
+        }else{
+            data = d->chunks[d->front_chunk_idx].data_array[d->chunks[d->front_chunk_idx].idx_init+1];
+            d->chunks[d->front_chunk_idx].data_array[d->chunks[d->front_chunk_idx].idx_init+1] = 0;
+            d->chunks[d->front_chunk_idx].idx_init++;
+            d->chunks[d->front_chunk_idx]._size--;
+        }
+    }
+    d->size--;
+    return data;
+}
+
+
+int deque_pop_back(Deque* d){
+    int data = -1;
+    if(deque_empty(d)){
+        return -1;
+    }else{
+        if(d->chunks[d->rear_chunk_idx].idx_end - 1 == -1){
+            if(d->rear_chunk_idx == 0){
+                d->rear_chunk_idx = CHUNKS - 1;
+            }else{
+                d->rear_chunk_idx--;
+            }
+            int data_index = d->chunks[d->rear_chunk_idx].idx_end-1;
+            int chunk_index = d->rear_chunk_idx;
+
+            if(data_index >= CHUNK_SIZE){
+                data_index = CHUNK_SIZE - 1;
+            }else if(data_index == -1){
+                data_index = 0;
+            }
+
+            data = d->chunks[chunk_index].data_array[data_index];
+            d->chunks[chunk_index].data_array[data_index] = 0;
+            d->chunks[chunk_index].idx_end = data_index;
+            d->chunks[chunk_index]._size--;
+
+        }else{
+            data = d->chunks[d->rear_chunk_idx].data_array[d->chunks[d->rear_chunk_idx].idx_end-1];
+            d->chunks[d->rear_chunk_idx].data_array[d->chunks[d->rear_chunk_idx].idx_end-1] = 0;
+            d->chunks[d->rear_chunk_idx].idx_end--;
+            d->chunks[d->rear_chunk_idx]._size--;
+        }
+    }
+    d->size--;
+    return data;
 }

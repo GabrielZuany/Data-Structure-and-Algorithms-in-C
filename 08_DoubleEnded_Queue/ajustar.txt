@@ -1,4 +1,4 @@
-- corrigir leve cagada (substiruir a logica dos arrays circulares por arrays normais)
 - implementar realloc
 - lembrar de ajeitar os ponteiros que referenciam o centro do array de chunks
 - iniciar com 1 chunk e ir reallocando
+- recuperar em O(1)
