@@ -55,36 +55,26 @@ void chunk_push_back(chunk* c, void* data)
     c->_size++;
 }
 
-void* chunk_pop_front(chunk* c) {
+void* chunk_pop_front(chunk* c)
+{
     if (c->_size == 0) {
         return NULL;
     }
-
     void* data = c->data_array[c->idx_init];
     c->data_array[c->idx_init] = NULL;
-
-    if (c->idx_init == CHUNK_SIZE - 1)
-        c->idx_init = 0;
-    else
-        c->idx_init++;
-
+    c->idx_init++;
     c->_size--;
     return data;
 }
 
-void* chunk_pop_back(chunk* c) {
+void* chunk_pop_back(chunk* c)
+{
     if (c->_size == 0) {
         return NULL;
     }
-
-    void* data = c->data_array[c->idx_end];
-    c->data_array[c->idx_end] = NULL;
-
-    if (c->idx_end == 0)
-        c->idx_end = CHUNK_SIZE - 1;
-    else
-        c->idx_end--;
-
+    void* data = c->data_array[c->idx_end - 1];
+    c->data_array[c->idx_end - 1] = NULL;
+    c->idx_end--;
     c->_size--;
     return data;
 }
@@ -99,7 +89,7 @@ int chunk_size(chunk* c) {
 
 void chunk_destroy(chunk* c) {
     for(int i = 0; i < CHUNK_SIZE; i++) {
-        //free(c->data_array[i]);
+        free(c->data_array[i]);
     }
     free(c->data_array);
 }
@@ -178,81 +168,46 @@ void deque_push_back(Deque* d, void* data) {
     d->size++;
 }
 
-
-void* deque_pop_front(Deque* d) {
-    void* data = NULL;
-    if (deque_empty(d)) {
+void* deque_pop_back(Deque* d)
+{
+    if (d->size == 0) {
         return NULL;
     }
-    else {
-        if (d->chunks[d->front_chunk_idx].idx_init + 1 >= CHUNK_SIZE) {
-            if (d->front_chunk_idx == CHUNKS - 1) {
-                d->front_chunk_idx = 0;
-            }
-            else {
-                d->front_chunk_idx++;
-            }
-            int data_index = d->chunks[d->front_chunk_idx].idx_init;
-            int chunk_index = d->front_chunk_idx;
-
-            if (data_index == -1) {
-                data_index = 0;
-            }
-            data = d->chunks[chunk_index].data_array[data_index];
-            d->chunks[chunk_index].data_array[data_index] = NULL;
-            d->chunks[chunk_index].idx_init = data_index;
-            d->chunks[chunk_index]._size--;
-
-        }
-        else {
-            data = d->chunks[d->front_chunk_idx].data_array[d->chunks[d->front_chunk_idx].idx_init + 1];
-            d->chunks[d->front_chunk_idx].data_array[d->chunks[d->front_chunk_idx].idx_init + 1] = NULL;
-            d->chunks[d->front_chunk_idx].idx_init++;
-            d->chunks[d->front_chunk_idx]._size--;
-        }
+    if (chunk_empty(&(d->chunks[d->rear_chunk_idx])) && d->rear_chunk_idx > 0) {
+        d->rear_chunk_idx--;
     }
+
+    if (d->rear_chunk_idx < 0) {
+        d->rear_chunk_idx = d->arr_chunks_size - 1;
+        deque_pop_back(d);
+    }
+
+    void* data = chunk_pop_back(&(d->chunks[d->rear_chunk_idx]));
+
     d->size--;
     return data;
 }
 
-void* deque_pop_back(Deque* d) {
-    void* data = NULL;
-    if (deque_empty(d)) {
+void* deque_pop_front(Deque* d)
+{
+    if (d->size == 0) {
         return NULL;
     }
-    else {
-        if (d->chunks[d->rear_chunk_idx].idx_end - 1 < 0) {
-            if (d->rear_chunk_idx == 0) {
-                d->rear_chunk_idx = CHUNKS - 1;
-            }
-            else {
-                d->rear_chunk_idx--;
-            }
-            int data_index = d->chunks[d->rear_chunk_idx].idx_end - 1;
-            int chunk_index = d->rear_chunk_idx;
-
-            if (data_index >= CHUNK_SIZE) {
-                data_index = CHUNK_SIZE - 1;
-            }
-            else if (data_index == -1) {
-                data_index = 0;
-            }
-
-            data = d->chunks[chunk_index].data_array[data_index];
-            d->chunks[chunk_index].data_array[data_index] = NULL;
-            d->chunks[chunk_index].idx_end = data_index + 1;
-            d->chunks[chunk_index]._size--;
-        }
-        else {
-            data = d->chunks[d->rear_chunk_idx].data_array[d->chunks[d->rear_chunk_idx].idx_end - 1];
-            d->chunks[d->rear_chunk_idx].data_array[d->chunks[d->rear_chunk_idx].idx_end - 1] = NULL;
-            d->chunks[d->rear_chunk_idx].idx_end--;
-            d->chunks[d->rear_chunk_idx]._size--;
-        }
+    if (chunk_empty(&(d->chunks[d->front_chunk_idx]))) {
+        d->front_chunk_idx++;
     }
+
+    if (d->front_chunk_idx >= d->arr_chunks_size) {
+        d->front_chunk_idx = 0;
+        deque_pop_front(d);
+    }
+
+    void* data = chunk_pop_front(&(d->chunks[d->front_chunk_idx]));
+
     d->size--;
     return data;
 }
+
 
 int deque_empty(Deque* d) {
     return d->size == 0;

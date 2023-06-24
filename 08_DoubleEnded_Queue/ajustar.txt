@@ -1,2 +1,7 @@
 - arrumar pops
 - recuperar em O(1)
+
+-> in2
+-> in3
+-> in4
+-> in6
