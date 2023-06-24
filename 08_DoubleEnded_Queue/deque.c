@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "deque.h"
 
-#define CHUNK_SIZE 50
-#define CHUNKS 50
+#define CHUNK_SIZE 1
+#define CHUNKS 5
 
 typedef struct chunk {
     void** data_array;
@@ -130,6 +132,9 @@ int chunk_insert_first_position(chunk* c, void* data) {
 }
 
 void chunk_destroy(chunk* c) {
+    for(int i = 0; i < CHUNK_SIZE; i++) {
+        free(c->data_array[i]);
+    }
     free(c->data_array);
 }
 
@@ -140,7 +145,6 @@ typedef struct Deque {
     int arr_chunks_size; // size of the array of chunks
     int _tchunks;        // total chunks (1st arr)
     int size;            // deque size (chunks*size of each chunk)
-    int allocated;
     int front_chunk_idx;
     int rear_chunk_idx;
 } Deque;
@@ -151,9 +155,9 @@ Deque* deque_create() {
     for (int i = 0; i < CHUNKS; i++) {
         d->chunks[i] = chunk_create(CHUNK_SIZE);
     }
+    d->arr_chunks_size = CHUNKS;
     d->_tchunks = CHUNKS * CHUNK_SIZE;
     d->size = 0;
-    d->allocated = CHUNKS;
     d->front_chunk_idx = CHUNKS / 2;
     d->rear_chunk_idx = CHUNKS / 2;
     return d;
@@ -166,7 +170,24 @@ void deque_push_front(Deque* d, void* data) {
         int next_free_chunk = d->front_chunk_idx - 1;
 
         if (next_free_chunk == -1) {
-            next_free_chunk = CHUNKS - 1;
+            //next_free_chunk = CHUNKS - 1;
+            chunk* new_chunks = (chunk*)calloc(sizeof(chunk), (d->arr_chunks_size + 2));
+            memcpy(new_chunks + 1, d->chunks, sizeof(chunk) * d->arr_chunks_size);
+            __deque_destroy_chunks(d);
+            free(d->chunks);
+            d->chunks = new_chunks;
+            d->chunks[0] = chunk_create(CHUNK_SIZE);
+            d->chunks[d->arr_chunks_size + 1] = chunk_create(CHUNK_SIZE);
+            d->_tchunks = (d->arr_chunks_size + 2) * CHUNK_SIZE;
+            d->arr_chunks_size += 2;
+            
+            //reindex chunks
+            for (int i = 0; i < d->arr_chunks_size; i++) {
+                d->chunks[i].idx_init += 1;
+                d->chunks[i].idx_end += 1;
+            }
+
+            next_free_chunk = 0;
         }
         chunk_insert_last_position(&(d->chunks[next_free_chunk]), data);
         d->front_chunk_idx = next_free_chunk;
@@ -275,10 +296,14 @@ int deque_empty(Deque* d) {
     return d->size == 0;
 }
 
-void deque_destroy(Deque* d) {
-    for (int i = 0; i < CHUNKS; i++) {
+void __deque_destroy_chunks(Deque* d) {
+    for (int i = 0; i < d->arr_chunks_size; i++) {
         chunk_destroy(&(d->chunks[i]));
     }
+}
+
+void deque_destroy(Deque* d) {
+    __deque_destroy_chunks(d);
     free(d->chunks);
     free(d);
 }

@@ -4,9 +4,12 @@
 typedef struct Deque Deque;
 
 Deque* deque_create();
+
 void deque_destroy(Deque* d);
 
 int deque_empty(Deque* d);
+
+void __deque_destroy_chunks(Deque* d);
 
 void deque_push_front(Deque* d, void* data);
 
