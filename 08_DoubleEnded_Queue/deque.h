@@ -12,8 +12,6 @@ void deque_push_front(Deque* d, void* data);
 
 void deque_push_back(Deque* d, void* data);
 
-void deque_print(Deque* d, void (*print)(void*));
-
 void* deque_pop_front(Deque* d);
 
 void* deque_pop_back(Deque* d);

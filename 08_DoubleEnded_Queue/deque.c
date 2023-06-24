@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define CHUNK_SIZE 5
-#define CHUNKS 5
+#define CHUNK_SIZE 50
+#define CHUNKS 50
 
 typedef struct chunk {
     void** data_array;
@@ -10,17 +10,6 @@ typedef struct chunk {
     int idx_init;
     int idx_end;
 } chunk;
-
-typedef struct Deque {
-    chunk* chunks;
-    int arr_chunks_size;
-    int _tchunks;
-    int size;
-    int allocated;
-    int front_chunk_idx;
-    int rear_chunk_idx;
-} Deque;
-
 
 chunk chunk_create(int size) {
     chunk c;
@@ -140,20 +129,21 @@ int chunk_insert_first_position(chunk* c, void* data) {
     return 0;
 }
 
-void chunk_print(chunk* c, void (*print)(void*)) {
-    printf("[");
-    for (int i = 0; i < CHUNK_SIZE; i++) {
-        print(c->data_array[i]);
-    }
-    printf("]");
-}
-
 void chunk_destroy(chunk* c) {
     free(c->data_array);
 }
 
 //------------------------------------------------
 
+typedef struct Deque {
+    chunk* chunks;
+    int arr_chunks_size; // size of the array of chunks
+    int _tchunks;        // total chunks (1st arr)
+    int size;            // deque size (chunks*size of each chunk)
+    int allocated;
+    int front_chunk_idx;
+    int rear_chunk_idx;
+} Deque;
 
 Deque* deque_create() {
     Deque* d = (Deque*)malloc(sizeof(Deque));
@@ -167,18 +157,6 @@ Deque* deque_create() {
     d->front_chunk_idx = CHUNKS / 2;
     d->rear_chunk_idx = CHUNKS / 2;
     return d;
-}
-
-void deque_destroy(Deque* d) {
-    for (int i = 0; i < CHUNKS; i++) {
-        chunk_destroy(&(d->chunks[i]));
-    }
-    free(d->chunks);
-    free(d);
-}
-
-int deque_empty(Deque* d) {
-    return d->size == 0;
 }
 
 void deque_push_front(Deque* d, void* data) {
@@ -216,27 +194,6 @@ void deque_push_back(Deque* d, void* data) {
         chunk_push_back(&(d->chunks[d->rear_chunk_idx]), data);
     }
     d->size++;
-}
-
-void deque_print(Deque* d, void (*print)(void*)) {
-    for (int i = 0; i < CHUNKS; i++) {
-        printf("Chunk (%d): ", i);
-        chunk_print(&(d->chunks[i]), print);
-        printf("\n");
-    }
-
-    printf("front chunk idx: %d\n", d->front_chunk_idx);
-    printf("front chunk init: %d\n", d->chunks[d->front_chunk_idx].idx_init);
-    printf("front chunk end: %d\n", d->chunks[d->front_chunk_idx].idx_end);
-    printf("front chunk size: %d\n", d->chunks[d->front_chunk_idx]._size);
-
-    printf("rear chunk idx: %d\n", d->rear_chunk_idx);
-    printf("rear chunk init: %d\n", d->chunks[d->rear_chunk_idx].idx_init);
-    printf("rear chunk end: %d\n", d->chunks[d->rear_chunk_idx].idx_end);
-    printf("rear chunk size: %d\n", d->chunks[d->rear_chunk_idx]._size);
-
-    printf("\n");
-    printf("\n");
 }
 
 void* deque_pop_front(Deque* d) {
@@ -312,4 +269,16 @@ void* deque_pop_back(Deque* d) {
     }
     d->size--;
     return data;
+}
+
+int deque_empty(Deque* d) {
+    return d->size == 0;
+}
+
+void deque_destroy(Deque* d) {
+    for (int i = 0; i < CHUNKS; i++) {
+        chunk_destroy(&(d->chunks[i]));
+    }
+    free(d->chunks);
+    free(d);
 }

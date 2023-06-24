@@ -21,12 +21,6 @@ void celula_free(Celula *c)
     free(c);
 }
 
-//celula_print function to be passed as parameter to deque_print
-void celula_print(void *c)
-{
-    Celula *cel = c;
-    printf("(%d,%d)", cel->x, cel->y);
-}
 
 int main()
 {
