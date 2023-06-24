@@ -55,7 +55,7 @@ int main()
             Celula *c = deque_pop_back(d);
             printf("%d %d\n", c->x, c->y);
             celula_free(c);
-        }   
+        }  
     }
 
     deque_destroy(d);
