@@ -119,6 +119,15 @@ void __deque_realloc(Deque* d) {
     d->arr_chunks_size += 2;
 }
 
+void __deque_reset(Deque *d){
+    d->front_chunk_idx = d->arr_chunks_size / 2;
+    d->rear_chunk_idx = d->arr_chunks_size / 2;
+    for(int i = 0; i < d->arr_chunks_size; i++){
+        d->chunks[i].idx_init = 0;
+        d->chunks[i].idx_end = 0;
+    }
+}
+
 void deque_push_front(Deque* d, void* data) {
     int curr_chunk_size = 0;
 
@@ -157,8 +166,7 @@ void deque_push_back(Deque* d, void* data) {
     d->size++;
 }
 
-void* deque_pop_back(Deque* d)
-{
+void* deque_pop_back(Deque* d){
     if (d->size == 0) {
         return NULL;
     }
@@ -175,17 +183,12 @@ void* deque_pop_back(Deque* d)
     d->size--;
 
     if(d->size == 0){
-        //free deque and recreate it
-        deque_destroy(d);
-        Deque* new_deque = deque_create();
-        d = new_deque;
+        __deque_reset(d);
     }
-
     return data;
 }
 
-void* deque_pop_front(Deque* d)
-{
+void* deque_pop_front(Deque* d){
     if (d->size == 0) {
         return NULL;
     }
@@ -202,11 +205,8 @@ void* deque_pop_front(Deque* d)
     d->size--;
 
     if(d->size == 0){
-        deque_destroy(d);
-        Deque* new_deque = deque_create();
-        d = new_deque;
+        __deque_reset(d);
     }
-
     return data;
 }
 
@@ -218,8 +218,10 @@ void deque_destroy(Deque* d){
     if (d == NULL) {
         return;
     }
-
     for (int i = 0; i < d->arr_chunks_size; i++) {
+        for(int j = 0; j < CHUNK_SIZE; j++) {
+            free(d->chunks[i].data_array[j]);
+        }
         free(d->chunks[i].data_array);
     }
     free(d->chunks);
@@ -227,7 +229,7 @@ void deque_destroy(Deque* d){
     free(d);
 }
 
-
+/*
 void deque_print(Deque* d, void (*print)(void*)) {
     printf("Deque: \n");
     for (int i = 0; i < d->arr_chunks_size; i++) {
@@ -245,4 +247,4 @@ void deque_print(Deque* d, void (*print)(void*)) {
     printf("FRONT CHUNK SIZE: %d\n", chunk_size(&(d->chunks[d->front_chunk_idx])));
     printf("REAR CHUNK SIZE: %d\n", chunk_size(&(d->chunks[d->rear_chunk_idx])));
     printf("\n");
-}
+}*/

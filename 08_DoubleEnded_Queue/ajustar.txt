@@ -1,2 +1,0 @@
-- arrumar pops
-- recuperar em O(1)
