@@ -22,6 +22,12 @@ void celula_free(Celula *c)
     free(c);
 }
 
+void celula_print(void *c)
+{   
+    Celula *cel = (Celula *)c;
+    printf("(%d,%d)", cel->x, cel->y);
+}
+
 int main()
 {
     int i, n, x, y;
@@ -56,6 +62,20 @@ int main()
             printf("%d %d\n", c->x, c->y);
             celula_free(c);
         }
+        /*if(!strcmp(cmd, "PUSH_FRONT")){
+            deque_push_front(d, (void *)i+1);
+        }
+        else if(!strcmp(cmd, "PUSH_BACK")){
+            deque_push_back(d, (void *)i+1);
+        }
+        else if(!strcmp(cmd, "POP_FRONT")){
+            printf("%d\n", deque_pop_front(d));
+        }
+        else if(!strcmp(cmd, "POP_BACK")){
+            printf("%d\n", deque_pop_back(d));
+        }*/
+        
+        //deque_print(d, NULL);
     }
 
     deque_destroy(d);
