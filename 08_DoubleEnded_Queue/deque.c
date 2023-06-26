@@ -82,12 +82,6 @@ int chunk_size(chunk* c) {
     return c->_size;
 }
 
-void chunk_destroy(chunk* c) {
-    for(int i = 0; i < CHUNK_SIZE; i++) {
-        free(c->data_array[i]);
-    }
-    free(c->data_array);
-}
 
 //------------------------------------------------
 
@@ -220,17 +214,19 @@ int deque_empty(Deque* d) {
     return d->size == 0;
 }
 
-void __deque_destroy_chunks(Deque* d) {
-    for (int i = 0; i < d->arr_chunks_size; i++) {
-        chunk_destroy(&(d->chunks[i]));
+void deque_destroy(Deque* d){
+    if (d == NULL) {
+        return;
     }
-}
 
-void deque_destroy(Deque* d) {
-    __deque_destroy_chunks(d);
+    for (int i = 0; i < d->arr_chunks_size; i++) {
+        free(d->chunks[i].data_array);
+    }
     free(d->chunks);
+
     free(d);
 }
+
 
 void deque_print(Deque* d, void (*print)(void*)) {
     printf("Deque: \n");
