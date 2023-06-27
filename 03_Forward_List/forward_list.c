@@ -120,3 +120,8 @@ void forward_list_destroy(ForwardList *l){
     node_destroy_recursive(l->head);
     free(l);
 }
+
+int forward_list_is_empty(ForwardList *l){
+    if(l->head == NULL) return 1;
+    return 0;
+}

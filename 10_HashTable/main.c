@@ -67,22 +67,27 @@ int main()
             int *pos = hash_table_get(h, cel);
             printf("%d\n", *pos);
             celula_destroy(cel);
+        }else if(!strcmp(cmd, "POP")){
+            scanf("%d %d", &x, &y);
+            Celula *cel = celula_create(x, y);
+            int *pos = hash_table_pop(h, cel);
+            printf("%d\n", *pos);
+            celula_destroy(cel);
         }
     }
 
-    /*HashTableIterator *it = hash_table_iterator(h);
+    HashTableIterator *it = hash_table_iterator_construct(h);
 
     while (!hash_table_iterator_is_over(it))
     {
         HashTableItem *item = hash_table_iterator_next(it);
-        Celula *cel = (Celula *)item->key;
-        int *pos = (int *)item->val;
+        Celula *cel = (Celula *)hash_table_item_get_key(item);
+        int *pos = (int *)hash_table_item_get_value(item);
         celula_destroy(cel);
-        free(pos);
     }
 
     hash_table_iterator_destroy(it);
-    hash_table_destroy(h);*/
+    hash_table_destroy(h);
 
     return 0;
 }

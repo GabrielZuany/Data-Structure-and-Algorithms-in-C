@@ -145,4 +145,15 @@ void forward_list_cat(ForwardList *l, ForwardList *m);
  */
 void forward_list_destroy(ForwardList *l);
 
+/**
+ * @brief Returns 1 if the linked list is empty, 0 otherwise.
+ * @param l
+ * Pointer to the linked list.
+ * @return int
+ * 1 if the linked list is empty, 0 otherwise.
+ *
+ * @note Complexity: O(1)
+ */
+int forward_list_is_empty(ForwardList *l);
+
 #endif

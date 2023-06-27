@@ -6,24 +6,38 @@
 #include "../03_Forward_List/forward_list.h"
 #include "../03_Forward_List/node.h"
 
-struct HashTable{
-    int size;
-    hash_function hash_func;
-    cmp_hash_values cmp_func;
-    ForwardList **table;
-}; 
 
-typedef struct HashTableItem HashTableItem;
+
+// ************* HASH TABLE ITEM ************* //
+
 struct HashTableItem{
     void *key;
     void *val;
 };
 
-typedef struct HashTableIterator HashTableIterator;
-struct HashTableIterator{
-    HashTable *h;
-    int index;
-    Node *node;
+void* hash_table_item_get_key(HashTableItem *item){
+    if(item == NULL)
+        return NULL;
+    return item->key;
+}
+
+void* hash_table_item_get_value(HashTableItem *item){
+    if (item == NULL)
+        return NULL;
+    
+    return item->val;
+}
+
+
+
+
+// ************* HASH TABLE ************* //
+
+struct HashTable{
+    int size;
+    hash_function hash_func;
+    cmp_hash_values cmp_func;
+    ForwardList **table;
 };
 
 HashTable *hash_table_construct(int size, hash_function hash_func, cmp_hash_values cmp_func){
@@ -74,27 +88,92 @@ void hash_table_set(HashTable *h, void* key, void *val){
 void *hash_table_get(HashTable *h, void* key){
     int hash = h->hash_func(h, key);
     ForwardList *list = h->table[hash];
-
-    // go to index and get the first node
     Node *node = forward_list_get_head_node(list);
 
-    // if node == NULL then the list is empty and we can just push the item
     while(node != NULL){
         HashTableItem *item = node_get_value(node);
-
-        // check if the key is already in the list to update the value
         if(h->cmp_func(item->key, key) == 0){
             return item->val;
         }
-
-        // if not, go to the next node until we find the key or reach the end of the list
         node = node_get_next(node);
     }
 
     return NULL;
 }
-/*
 
-void *hash_table_pop(HashTable *h, int key);
+void *hash_table_pop(HashTable *h, void* key){
+    void *val = NULL;
+    int hash = h->hash_func(h, key);
+    ForwardList *list = h->table[hash];
 
-void hash_table_destroy(HashTable *h);*/
+    Node *node = forward_list_get_head_node(list);
+
+    while(node != NULL){
+        HashTableItem *item = node_get_value(node);
+        if(h->cmp_func(item->key, key) == 0){
+            val = item->val;
+        }
+        node = node_get_next(node);
+    }
+
+    return val;
+}
+
+void hash_table_destroy(HashTable *h){
+    int i = 0;
+    for(i = 0; i<h->size ; i++){
+        forward_list_destroy(h->table[i]);
+    }
+    free(h->table);
+}
+
+
+
+
+
+
+// ************* HASH TABLE ITERATOR ************* //
+#include <stdlib.h>
+
+struct HashTableIterator {
+    HashTable *h;
+    int index;
+    Node *node;
+};
+
+HashTableIterator *hash_table_iterator_construct(HashTable *h) {
+    HashTableIterator *it = malloc(sizeof(HashTableIterator));
+    it->h = h;
+    it->index = 0;
+    it->node = NULL;
+    return it;
+}
+
+int hash_table_iterator_is_over(HashTableIterator *it) {
+    return it->index >= it->h->size;
+}
+
+int hash_table_iterator_has_next(HashTableIterator *it) {
+    while (it->index < it->h->size ) {
+        it->index++;
+        if (it->index < it->h->size) {
+            it->node = forward_list_get_head_node(it->h->table[it->index]);
+        }
+    }
+    return it->node != NULL;
+}
+
+HashTableItem *hash_table_iterator_next(HashTableIterator *it) {
+    if (!hash_table_iterator_has_next(it)) {
+        return NULL;
+    }
+
+    HashTableItem *item = node_get_value(it->node);
+    it->node = (it->node != NULL) ? node_get_next(it->node) : NULL;
+
+    return item;
+}
+
+void hash_table_iterator_destroy(HashTableIterator *it) {
+    free(it);
+}
