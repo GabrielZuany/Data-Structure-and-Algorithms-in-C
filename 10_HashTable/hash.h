@@ -5,7 +5,7 @@ typedef int (*hash_function)(HashTable* h, void* key);
 typedef int (*cmp_hash_values)(void* key1, void* key2);
 HashTable *hash_table_construct(int size, hash_function hash_function, cmp_hash_values cmp_function);
 
-void hash_table_set(HashTable *h, void* key, void *val);
+void* hash_table_set(HashTable *h, void* key, void *val, void (*val_destroy)(void *));
 
 void *hash_table_get(HashTable *h, void* key);
 
@@ -23,6 +23,7 @@ void* hash_table_item_get_key(HashTableItem *item);
 
 void* hash_table_item_get_value(HashTableItem *item);
 
+void hash_table_item_destroy(HashTableItem *item, void (*key_destroy)(void *), void (*val_destroy)(void *));
 
 
 typedef struct HashTableIterator HashTableIterator;

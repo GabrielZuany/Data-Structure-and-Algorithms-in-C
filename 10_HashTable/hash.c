@@ -27,6 +27,19 @@ void* hash_table_item_get_value(HashTableItem *item){
     return item->val;
 }
 
+void hash_table_item_destroy(HashTableItem *item, void (*key_destroy)(void *), void (*val_destroy)(void *)){
+    if(item == NULL)
+        return;
+    
+    if(key_destroy != NULL)
+        key_destroy(item->key);
+    
+    if(val_destroy != NULL)
+        val_destroy(item->val);
+
+    free(item);        
+}
+
 
 
 
@@ -55,7 +68,7 @@ int hash_table_size(HashTable *h){
     return h->size;
 }
 
-void hash_table_set(HashTable *h, void* key, void *val){
+void* hash_table_set(HashTable *h, void* key, void *val, void (*val_destroy)(void *)){
     int hash = h->hash_func(h, key);
     ForwardList *list = h->table[hash];
 
@@ -68,8 +81,14 @@ void hash_table_set(HashTable *h, void* key, void *val){
 
         // check if the key is already in the list to update the value
         if(h->cmp_func(item->key, key) == 0){
+            
+            if(val_destroy != NULL)
+                val_destroy(item->val);
+            else 
+                free(item->val);
+
             item->val = val;
-            return;
+            return (void *)item->val;
         }
 
         // if not, go to the next node until we find the key or reach the end of the list
@@ -81,7 +100,7 @@ void hash_table_set(HashTable *h, void* key, void *val){
     item->key = key;
     item->val = val;
     forward_list_push_front(list, item);
-    return;
+    return NULL;
 }
 
 void *hash_table_get(HashTable *h, void* key){
@@ -124,6 +143,7 @@ void hash_table_destroy(HashTable *h){
         forward_list_destroy(h->table[i]);
     }
     free(h->table);
+    free(h);
 }
 
 

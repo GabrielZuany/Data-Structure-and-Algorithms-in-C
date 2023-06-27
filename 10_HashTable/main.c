@@ -60,7 +60,11 @@ int main()
             int *pos = malloc(sizeof(int));
             scanf("%d %d %d", &x, &y, pos);
             Celula *cel = celula_create(x, y);
-            hash_table_set(h, cel, pos);
+            void* set_return = hash_table_set(h, cel, pos, free);
+            if(set_return != NULL){
+                free(cel);
+            }
+
         }
         else if (!strcmp(cmd, "GET"))
         {
@@ -77,7 +81,7 @@ int main()
             printf("%d\n", *pos);
             celula_destroy(cel);
         }
-    }
+    }   
 
     HashTableIterator *it = hash_table_iterator_construct(h);
 
@@ -85,17 +89,13 @@ int main()
     {
         HashTableItem *item = hash_table_iterator_next(it);
         Celula *cel = (Celula *)hash_table_item_get_key(item);
-        int *pos = (int *)hash_table_item_get_value(item);
-        if(item != NULL)
-            printf("%d %d %d\n", cel->x, cel->y, *pos);
-        else   
-            printf("NULL\n");
+        if(item != NULL){
+            hash_table_item_destroy(item, NULL, free);
+        }
         celula_destroy(cel);
     }
 
     hash_table_iterator_destroy(it);
-
-
     hash_table_destroy(h);
 
     return 0;
