@@ -1,6 +1,5 @@
 #ifndef _HASH_TABLE_H_
 #define _HASH_TABLE_H_
-
 typedef struct HashTable HashTable;
 typedef int (*hash_function)(HashTable* h, void* key);
 typedef int (*cmp_hash_values)(void* key1, void* key2);

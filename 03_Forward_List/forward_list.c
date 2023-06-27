@@ -17,6 +17,8 @@ ForwardList *forward_list_construct(){
 }
 
 int forward_list_size(ForwardList *l){
+    if(l == NULL)
+        return 0;
     return l->size;
 }
 

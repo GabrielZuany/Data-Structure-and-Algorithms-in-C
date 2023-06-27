@@ -1,4 +1,3 @@
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -128,13 +127,7 @@ void hash_table_destroy(HashTable *h){
 }
 
 
-
-
-
-
 // ************* HASH TABLE ITERATOR ************* //
-#include <stdlib.h>
-
 struct HashTableIterator {
     HashTable *h;
     int index;
@@ -154,7 +147,7 @@ int hash_table_iterator_is_over(HashTableIterator *it) {
 }
 
 int hash_table_iterator_has_next(HashTableIterator *it) {
-    while (it->index < it->h->size ) {
+    while (it->index < it->h->size && it->node == NULL) {
         it->index++;
         if (it->index < it->h->size) {
             it->node = forward_list_get_head_node(it->h->table[it->index]);
@@ -169,8 +162,7 @@ HashTableItem *hash_table_iterator_next(HashTableIterator *it) {
     }
 
     HashTableItem *item = node_get_value(it->node);
-    it->node = (it->node != NULL) ? node_get_next(it->node) : NULL;
-
+    it->node = node_get_next(it->node);
     return item;
 }
 

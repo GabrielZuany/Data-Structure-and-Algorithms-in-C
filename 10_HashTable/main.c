@@ -3,6 +3,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "hash.h"
+#include "../03_Forward_List/forward_list.h"
+#include "../03_Forward_List/node.h"
 
 typedef struct
 {
@@ -67,7 +69,8 @@ int main()
             int *pos = hash_table_get(h, cel);
             printf("%d\n", *pos);
             celula_destroy(cel);
-        }else if(!strcmp(cmd, "POP")){
+        }
+        else if(!strcmp(cmd, "POP")){
             scanf("%d %d", &x, &y);
             Celula *cel = celula_create(x, y);
             int *pos = hash_table_pop(h, cel);
@@ -83,10 +86,16 @@ int main()
         HashTableItem *item = hash_table_iterator_next(it);
         Celula *cel = (Celula *)hash_table_item_get_key(item);
         int *pos = (int *)hash_table_item_get_value(item);
+        if(item != NULL)
+            printf("%d %d %d\n", cel->x, cel->y, *pos);
+        else   
+            printf("NULL\n");
         celula_destroy(cel);
     }
 
     hash_table_iterator_destroy(it);
+
+
     hash_table_destroy(h);
 
     return 0;
