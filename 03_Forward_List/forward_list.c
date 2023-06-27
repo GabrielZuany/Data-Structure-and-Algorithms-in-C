@@ -41,6 +41,31 @@ void forward_list_print(ForwardList *l, void (*print_fn)(void*)){
     l->head = reference;
 }
 
+Node* forward_list_get_head_node(ForwardList *l){
+    return l->head;
+}
+
+void* forward_list_get_head_value(ForwardList *l){
+    return node_get_value(l->head);
+}
+
+Node* forward_list_get_node(ForwardList *l, int i){
+    int count = 0;
+    int len = forward_list_size(l);
+    Node* reference = l->head;
+
+    while(count < len){
+        if(count == i){
+            l->head = reference;
+            return l->head;
+        }
+        l->head = node_get_next(l->head);
+        count++;
+    }
+    return NULL;
+}
+
+
 void* forward_list_get(ForwardList *l, int i){
     int count = 0;
     void* val = 0;

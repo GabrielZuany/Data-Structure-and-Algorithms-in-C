@@ -68,6 +68,41 @@ void forward_list_print(ForwardList *l, void (*print_fn)(void*));
 void* forward_list_get(ForwardList *l, int i);
 
 /**
+ * @brief Returns a pointer to the node at the given index.
+ * @param l
+ * Pointer to the linked list.
+ * @param i
+ * Index of the node.
+ * @return Node*
+ * Pointer to the node at the given index.
+ *
+ * @note Complexity: O(n)
+ */
+Node* forward_list_get_node(ForwardList *l, int i);
+
+/**
+ * @brief Returns a pointer to the first node of the linked list.
+ * @param l
+ * Pointer to the linked list.
+ * @return Node*
+ * Pointer to the first node of the linked list.
+ *
+ * @note Complexity: O(1)
+ */
+Node* forward_list_get_head_node(ForwardList *l);
+
+/**
+ * @brief Returns a pointer to the data stored in the first node of the linked list.
+ * @param l
+ * Pointer to the linked list.
+ * @return void*
+ * Pointer to the data stored in the first node of the linked list.
+ *
+ * @note Complexity: O(1)
+ */
+void* forward_list_get_head_value(ForwardList *l);
+
+/**
  * @brief Remove the first node of the linked list and returns its data.
  * @param l
  * Pointer to the linked list.
