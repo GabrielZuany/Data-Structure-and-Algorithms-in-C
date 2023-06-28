@@ -81,11 +81,9 @@ void* hash_table_set(HashTable *h, void* key, void *val, void (*val_destroy)(voi
 
         // check if the key is already in the list to update the value
         if(h->cmp_func(item->key, key) == 0){
-            
+
             if(val_destroy != NULL)
                 val_destroy(item->val);
-            else 
-                free(item->val);
 
             item->val = val;
             return (void *)item->val;
