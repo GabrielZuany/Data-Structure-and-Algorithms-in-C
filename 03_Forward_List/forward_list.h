@@ -31,6 +31,16 @@ ForwardList *forward_list_construct();
 int forward_list_size(ForwardList *l);
 
 /**
+ * @brief Destroy the Linked List:: Linked List object
+ *  Frees the memory allocated for the linked list.
+ * @param l
+ * Pointer to the linked list.
+ * 
+ * @note Complexity: O(n)
+ */
+void forward_list_remove_node(ForwardList *l, Node* n);
+
+/**
  * @brief Pushes a new node to the front of the linked list.
  *  Allocates memory for a new node and inserts it at the front of the linked list.
  * @param l

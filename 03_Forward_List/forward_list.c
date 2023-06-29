@@ -97,6 +97,32 @@ void* forward_list_pop_front(ForwardList *l){
     return val;
 }
 
+void forward_list_remove_node(ForwardList *l, Node* n){
+    Node* reference = l->head;
+    Node* prev = NULL;
+    while(l->head != NULL){
+        if(l->head == n){
+            if(prev == NULL){
+                l->head = node_get_next(l->head);
+                free(prev);
+                l->size--;
+                free(n);
+                return;
+            }
+            Node * prev_next = node_get_next(prev); 
+            prev_next = node_get_next(l->head);
+            free(l->head);
+            l->head = reference;
+            l->size--;
+            free(n);
+            return;
+        }
+        prev = l->head;
+        l->head = node_get_next(l->head);
+    }
+    l->head = reference;
+}
+
 ForwardList *forward_list_reverse(ForwardList *l){
     ForwardList* reversed_list = forward_list_construct();
     int size = forward_list_size(l), count = 0;
