@@ -20,7 +20,6 @@ struct Heap{
     int capacity;
 };
 
-
 Heap *heap_construct(){
     Heap *heap = malloc(sizeof(Heap));
     heap->size = 0;
@@ -30,15 +29,53 @@ Heap *heap_construct(){
 }
 
 void node_swap(HeapNode *a, HeapNode *b){
-    int temp_idx = a->arr_idx;
-    a->arr_idx = b->arr_idx;
-    b->arr_idx = temp_idx;
     HeapNode temp = *a;
     *a = *b;
     *b = temp;
 }
 
+void heapify_up( Heap *heap, int idx){
+    if(idx == 0){
+        return;
+    }
+
+    HeapNode *current = &heap->nodes[idx];
+    HeapNode *parent = &heap->nodes[_parent_idx_(idx)];
+
+    if(current->priority > parent->priority){
+        node_swap(current, parent);
+        heapify_up(heap, _parent_idx_(idx));
+    }
+}
+
+void heapify_down(Heap *heap, int idx) {
+    int left_child_idx = _left_child_idx_(idx);
+    int right_child_idx = _right_child_idx_(idx);
+    int largest = idx;
+
+    if (left_child_idx < heap->size &&
+        heap->nodes[left_child_idx].priority > heap->nodes[largest].priority) {
+        largest = left_child_idx;
+    }
+
+    if (right_child_idx < heap->size &&
+        heap->nodes[right_child_idx].priority > heap->nodes[largest].priority) {
+        largest = right_child_idx;
+    }
+
+    if (largest != idx) {
+        node_swap(&heap->nodes[idx], &heap->nodes[largest]);
+        heapify_down(heap, largest);
+    }
+}
+
 void heap_push(Heap *heap, void *data, double priority){
+
+    if(heap->size == heap->capacity){
+        heap->capacity *= 2;
+        heap->nodes = realloc(heap->nodes, sizeof(HeapNode) * heap->capacity);
+    }
+
     heap->nodes[heap->size].data = data;
     heap->nodes[heap->size].priority = priority;
     heap->size++;
@@ -47,14 +84,7 @@ void heap_push(Heap *heap, void *data, double priority){
         return;
     }
 
-    int new_node_idx = heap->size - 1;
-    while(heap->nodes[new_node_idx].priority > heap->nodes[_parent_idx_(new_node_idx)].priority){
-        HeapNode *parent = &heap->nodes[_parent_idx_(new_node_idx)];
-        HeapNode *current = &heap->nodes[new_node_idx];
-        node_swap(parent, current);
-        new_node_idx = _parent_idx_(new_node_idx);
-        current->arr_idx = new_node_idx;
-    }
+    heapify_up(heap, heap->size - 1);
 }
 
 HeapNode* heap_left_child_node(Heap *heap, HeapNode *node){
@@ -77,7 +107,9 @@ void *heap_max(Heap *heap){
     return heap->nodes[0].data;
 }
 
-double heap_max_priority(Heap *heap); // O(1)
+double heap_max_priority(Heap *heap){
+    return heap->nodes[0].priority;
+}
 
 void *heap_pop(Heap *heap){
     if(heap->size == 0){
@@ -88,37 +120,27 @@ void *heap_pop(Heap *heap){
     heap->nodes[0] = heap->nodes[heap->size - 1];
     heap->size--;
 
-    int current_idx = 0;
-    //while(1){
-    //    HeapNode *current = &heap->nodes[current_idx];
-    //    HeapNode *left_child = heap_left_child_node(heap, current);
-    //    HeapNode *right_child = heap_right_child_node(heap, current);
-//
-    //    if(left_child->priority > current->priority && right_child->priority > current->priority){
-    //        if(left_child->priority > right_child->priority){
-    //            node_swap(current, left_child);
-    //            current_idx = left_child->arr_idx;
-    //        }else{
-    //            node_swap(current, right_child);
-    //            current_idx = right_child->arr_idx;
-    //        }
-    //    }else if(left_child->priority > current->priority){
-    //        node_swap(current, left_child);
-    //        current_idx = left_child->arr_idx;
-    //    }else if(right_child->priority > current->priority){
-    //        node_swap(current, right_child);
-    //        current_idx = right_child->arr_idx;
-    //    }else{
-    //        break;
-    //    } 
-    //}
+    heapify_down(heap, 0);
 
     return data;
 }
 
-void heap_destroy(Heap *heap); // O(1)
+void heap_destroy(Heap *heap){
+    free(heap->nodes);
+    free(heap);
+}
 
-void heap_sort(void *array, int array_size, int item_size, double (*key_fn)(void *)); // O(N log N)
+void heap_sort(Heap *heap){
+    Heap* temp = heap_construct();
+    memcpy(temp->nodes, heap->nodes, sizeof(HeapNode) * heap->size);
+    temp->size = heap->size;
+    
+    for(int i = 0; i < heap->size; i++){
+        heap->nodes[i] = temp->nodes[0];
+        heap_pop(temp);
+    }
+    heap_destroy(temp);
+}
 
 void heap_print(Heap *heap, void (*print_fn)(void *)){
     int i = 0;
