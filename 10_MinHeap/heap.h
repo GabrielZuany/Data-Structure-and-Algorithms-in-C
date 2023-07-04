@@ -7,7 +7,7 @@
 typedef int Bool;
 typedef struct Heap Heap;
 
-Heap *heap_construct(); // O(1)
+Heap *heap_construct(void (*DatatypeDestructorFn)(void *, ...)); // O(1)
 void heap_push(
 Heap *heap, void *data, double priority); // O(log N)
 Bool heap_empty(Heap *heap); // O(1)

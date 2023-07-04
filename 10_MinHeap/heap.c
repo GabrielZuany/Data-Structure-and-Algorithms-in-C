@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "heap.h"
 
 #define CAPACITY 15
 #define _parent_idx_(idx) ((idx - 1) / 2)
@@ -17,6 +18,7 @@ typedef struct Heap {
     HeapNode* nodes;
     int size;
     int capacity;
+    void (*destructor_fn)(void*, ...);
 } Heap;
 
 // Function to swap two heap nodes
@@ -64,11 +66,12 @@ void heapify_down(Heap* heap, int idx) {
 }
 
 // Function to construct the heap
-Heap* heap_construct() {
+Heap* heap_construct(void (*DatatypeDestructorFn)(void *, ...)) {
     Heap* heap = malloc(sizeof(Heap));
     heap->size = 0;
     heap->capacity = CAPACITY;
     heap->nodes = malloc(sizeof(HeapNode) * heap->capacity);
+    heap->destructor_fn = DatatypeDestructorFn;
     return heap;
 }
 
@@ -137,13 +140,17 @@ void* heap_pop(Heap* heap) {
 
 // Function to destroy the heap and free the allocated memory
 void heap_destroy(Heap* heap) {
+    for (int i = 0; i < heap->size; i++) {
+        heap->destructor_fn(heap->nodes[i].data);
+    }
     free(heap->nodes);
     free(heap);
 }
 
 // Function to sort the elements in the heap (in-place)
 void heap_sort(Heap* heap) {
-    Heap* temp = heap_construct();
+    void (*DatatypeDestructorFn)(void *, ...) = heap->destructor_fn;
+    Heap* temp = heap_construct(DatatypeDestructorFn);
     memcpy(temp->nodes, heap->nodes, sizeof(HeapNode) * heap->size);
     temp->size = heap->size;
 
