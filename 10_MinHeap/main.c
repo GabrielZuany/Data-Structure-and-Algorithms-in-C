@@ -20,19 +20,14 @@ Celula *celula_create(int x, int y)
 
 void celula_destroy(Celula *c)
 {
-    free(c);
+    if(c!=NULL)
+        free(c);
 }
 
 void celula_destroy_wrapper(void *c, ...)
 {
-    celula_destroy((Celula *)c);
-}
-
-int celula_hash(HashTable *h, void *key)
-{
-    Celula *c = (Celula *)key;
-    // 83 e 97 sao primos e o operador "^" é o XOR bit a bit
-    return ((c->x * 83) ^ (c->y * 97)) % hash_table_size(h);
+    if(c!=NULL)
+        celula_destroy((Celula *)c);
 }
 
 int celula_cmp(void *c1, void *c2)
@@ -46,13 +41,18 @@ int celula_cmp(void *c1, void *c2)
         return 1;
 }
 
+void celula_print(void *c)
+{
+    Celula *cel = (Celula *)c;
+    printf("(%d, %d)", cel->x, cel->y);
+} 
+
 int main()
 {
     int i, n, x, y, priority;
     char cmd[10];
 
-    HashTable *h = hash_table_construct(19, celula_hash, celula_cmp);
-    Heap *heap = heap_construct(celula_destroy_wrapper, h);
+    Heap *heap = heap_construct(celula_destroy_wrapper, celula_cmp);
 
     scanf("%d", &n);
 
@@ -64,7 +64,7 @@ int main()
         {
             scanf("%d %d %d", &x, &y, &priority);
             Celula *cel = celula_create(x, y);
-            cel = heap_push(heap, cel, priority);
+            heap_push(heap, cel, priority);
         }
         else if (!strcmp(cmd, "POP"))
         {
@@ -75,7 +75,6 @@ int main()
         }
     }
 
-    hash_table_destroy(h, celula_destroy_wrapper, NULL);
     heap_destroy(heap);
 
     return 0;

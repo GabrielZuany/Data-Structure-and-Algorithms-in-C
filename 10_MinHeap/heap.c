@@ -19,16 +19,18 @@ typedef struct Heap {
     int size;
     int capacity;
     void (*destructor_fn)(void*, ...);
+    int (*cmp)(void*, void*);
 } Heap;
 
-// Function to swap two heap nodes
 void node_swap(HeapNode* a, HeapNode* b) {
     HeapNode temp = *a;
     *a = *b;
     *b = temp;
+    temp.arr_idx = a->arr_idx;
+    a->arr_idx = b->arr_idx;
+    b->arr_idx = temp.arr_idx;
 }
 
-// Function to perform heapify up
 void heapify_up(Heap* heap, int idx) {
     if (idx == 0) {
         return;
@@ -43,7 +45,6 @@ void heapify_up(Heap* heap, int idx) {
     }
 }
 
-// Function to perform heapify down
 void heapify_down(Heap* heap, int idx) {
     int left_child_idx = _left_child_idx_(idx);
     int right_child_idx = _right_child_idx_(idx);
@@ -65,21 +66,39 @@ void heapify_down(Heap* heap, int idx) {
     }
 }
 
-// Function to construct the heap
-Heap* heap_construct(void (*DatatypeDestructorFn)(void *, ...)) {
+Heap* heap_construct(void (*DatatypeDestructorFn)(void *, ...), int (*cmp)(void*, void*)) {
     Heap* heap = malloc(sizeof(Heap));
     heap->size = 0;
     heap->capacity = CAPACITY;
     heap->nodes = malloc(sizeof(HeapNode) * heap->capacity);
     heap->destructor_fn = DatatypeDestructorFn;
+    heap->cmp = cmp;
     return heap;
 }
 
-// Function to push a new element into the heap
+void* heap_find(Heap* heap, void* data) {
+    for (int i = 0; i < heap->size; i++) {
+        if(data != NULL && heap->nodes[i].data != NULL)
+            if (heap->cmp(heap->nodes[i].data, data) == 0) {
+                return &heap->nodes[i];
+            }
+    }
+    return NULL;
+}
+
 void heap_push(Heap* heap, void* data, double priority) {
     if (heap->size == heap->capacity) {
         heap->capacity *= 2;
         heap->nodes = realloc(heap->nodes, sizeof(HeapNode) * heap->capacity);
+    }
+
+    HeapNode* node = heap_find(heap, data);
+    if(node != NULL) {
+        if(node->priority > priority)
+            node->priority = priority;
+            heapify_up(heap, node->arr_idx);
+            heap->destructor_fn(data);
+            return;
     }
 
     heap->nodes[heap->size].data = data;
@@ -87,43 +106,38 @@ void heap_push(Heap* heap, void* data, double priority) {
     heap->size++;
 
     if (heap->size == 1) {
+        heap->nodes[0].arr_idx = 0;
         return;
     }
 
+    heap->nodes[heap->size - 1].arr_idx = heap->size - 1;
     heapify_up(heap, heap->size - 1);
 }
 
-// Function to get the left child node of a given node
 HeapNode* heap_left_child_node(Heap* heap, HeapNode* node) {
     return &heap->nodes[_left_child_idx_(node->arr_idx)];
 }
 
-// Function to get the right child node of a given node
 HeapNode* heap_right_child_node(Heap* heap, HeapNode* node) {
     return &heap->nodes[_right_child_idx_(node->arr_idx)];
 }
 
-// Function to get the parent node of a given node
 HeapNode* heap_parent_node(Heap* heap, HeapNode* node) {
     return &heap->nodes[_parent_idx_(node->arr_idx)];
 }
 
-// Function to check if the heap is empty
 int heap_empty(Heap* heap) {
     return heap->size == 0;
 }
 
-// Function to get the minimum element from the heap
 void* heap_min(Heap* heap) {
     return heap->nodes[0].data;
 }
 
-// Function to get the priority of the minimum element in the heap
 double heap_min_priority(Heap* heap) {
     return heap->nodes[0].priority;
 }
 
-// Function to pop the minimum element from the heap
 void* heap_pop(Heap* heap) {
     if (heap->size == 0) {
         return NULL;
@@ -138,7 +152,6 @@ void* heap_pop(Heap* heap) {
     return data;
 }
 
-// Function to destroy the heap and free the allocated memory
 void heap_destroy(Heap* heap) {
     for (int i = 0; i < heap->size; i++) {
         heap->destructor_fn(heap->nodes[i].data);
@@ -147,10 +160,10 @@ void heap_destroy(Heap* heap) {
     free(heap);
 }
 
-// Function to sort the elements in the heap (in-place)
 void heap_sort(Heap* heap) {
     void (*DatatypeDestructorFn)(void *, ...) = heap->destructor_fn;
-    Heap* temp = heap_construct(DatatypeDestructorFn);
+    int (*cmp)(void*, void*) = heap->cmp;
+    Heap* temp = heap_construct(DatatypeDestructorFn, cmp);
     memcpy(temp->nodes, heap->nodes, sizeof(HeapNode) * heap->size);
     temp->size = heap->size;
 
@@ -161,11 +174,44 @@ void heap_sort(Heap* heap) {
     heap_destroy(temp);
 }
 
-// Function to print the elements in the heap
 void heap_print(Heap* heap, void (*print_fn)(void*)) {
     int i = 0;
     for (i = 0; i < heap->size; i++) {
         print_fn(heap->nodes[i].data);
     }
     printf("\n");
+}
+
+void heap_tree_print(Heap* heap, void (*print_fn)(void*)) {
+    int i = 0;
+    printf("\n===[ Heap tree ]===\n");
+    for (i = 0; i < heap->size; i++) {
+        HeapNode* node = &heap->nodes[i];
+        HeapNode* left_child = heap_left_child_node(heap, node);
+        HeapNode* right_child = heap_right_child_node(heap, node);
+        HeapNode* parent = heap_parent_node(heap, node);
+
+        printf("Node: ");
+        if(node->data != NULL)
+            print_fn(node->data);
+            
+        printf(" Left child: ");
+        if(left_child->data != NULL)
+            print_fn(left_child->data);
+        else
+            printf("NULL");
+
+        printf(" Right child: ");
+        if(right_child->data != NULL)
+            print_fn(right_child->data);
+        else
+            printf("NULL");
+
+        printf(" Parent: ");
+        if(parent->data != NULL)
+            print_fn(parent->data);
+        else
+            printf("NULL");
+        printf("\n");
+    }
 }
