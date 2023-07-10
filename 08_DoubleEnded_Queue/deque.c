@@ -228,23 +228,3 @@ void deque_destroy(Deque* d){
 
     free(d);
 }
-
-/*
-void deque_print(Deque* d, void (*print)(void*)) {
-    printf("Deque: \n");
-    for (int i = 0; i < d->arr_chunks_size; i++) {
-        printf("Chunk (%d): [", i);
-        for(int j = 0; j < CHUNK_SIZE; j++) {
-            //print(d->chunks[i].data_array[j]);
-            printf("%d, ", d->chunks[i].data_array[j]);
-        }
-        printf("]\n");
-    }
-    printf("FRONT IDX INIT: %d\n", d->chunks[d->front_chunk_idx].idx_init);
-    printf("FRONT IDX END: %d\n", d->chunks[d->front_chunk_idx].idx_end);
-    printf("REAR IDX INIT: %d\n", d->chunks[d->rear_chunk_idx].idx_init);
-    printf("REAR IDX END: %d\n", d->chunks[d->rear_chunk_idx].idx_end);
-    printf("FRONT CHUNK SIZE: %d\n", chunk_size(&(d->chunks[d->front_chunk_idx])));
-    printf("REAR CHUNK SIZE: %d\n", chunk_size(&(d->chunks[d->rear_chunk_idx])));
-    printf("\n");
-}*/
