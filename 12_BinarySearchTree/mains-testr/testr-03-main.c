@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -69,11 +70,20 @@ int main()
             scanf("%s %s %d %f", cpf, nome, &idade, &altura);
             binary_tree_add(bt, strdup(cpf), person_construct(nome, cpf, idade, altura));
         }
+        else if (!strcmp(op, "POP"))
+        {
+            scanf("%s", cpf);
+            binary_tree_remove(bt, cpf);
+        }
         else
         {
             scanf("%s", cpf);
             Person *p = binary_tree_get(bt, cpf);
-            printf("%s %d %.2f\n", p->name, p->idade, p->altura);
+
+            if (p == NULL)
+                printf("CHAVE INEXISTENTE\n");
+            else
+                printf("%s %d %.2f\n", p->name, p->idade, p->altura);
         }
     }
 

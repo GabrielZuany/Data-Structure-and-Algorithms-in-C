@@ -22,20 +22,22 @@ void node_destroy(Node *node);
 BinaryTree *binary_tree_construct(
     CmpFn cmp_fn, KeyDestroyFn key_destroy_fn,
     ValDestroyFn val_destroy_fn);
-void binary_tree_add(BinaryTree *bt, void *key, void *value);
-/*
-void binary_tree_add_recursive(BinaryTree *bt, void *key, void *value);
-int binary_tree_empty(BinaryTree *bt);
-void binary_tree_remove(BinaryTree *bt, void *key);
-KeyValPair binary_tree_min(BinaryTree *bt);
-KeyValPair binary_tree_max(BinaryTree *bt);
-KeyValPair binary_tree_pop_min(BinaryTree *bt);
-KeyValPair binary_tree_pop_max(BinaryTree *bt);
-void *binary_tree_get(BinaryTree *bt, void *key);
-void binary_tree_destroy(BinaryTree *bt);
 
-// a funcao abaixo pode ser util para debug, mas nao eh obrigatoria.
-// void binary_tree_print(BinaryTree *bt);
+void binary_tree_add(BinaryTree *bt, void *key, void *value);
+
+int binary_tree_empty(BinaryTree *bt);
+
+KeyValPair* binary_tree_min(BinaryTree *bt);
+
+KeyValPair* binary_tree_max(BinaryTree *bt);
+
+void *binary_tree_get(BinaryTree *bt, void *key);
+KeyValPair* binary_tree_pop_min(BinaryTree *bt);
+KeyValPair* binary_tree_pop_max(BinaryTree *bt);
+void binary_tree_destroy(BinaryTree *bt);
+/*
+void binary_tree_remove(BinaryTree *bt, void *key);
+
 
 Vector *binary_tree_inorder_traversal(BinaryTree *bt);
 Vector *binary_tree_preorder_traversal(BinaryTree *bt);
