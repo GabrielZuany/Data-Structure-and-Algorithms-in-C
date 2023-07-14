@@ -12,6 +12,7 @@ struct Node
 {
     void *key;
     void *value;
+    struct Node *parent;
     struct Node *left;
     struct Node *right;
 };
@@ -49,12 +50,13 @@ void *key_val_pair_get_val(KeyValPair *kvp){
     return kvp->value;
 }
 
-Node *node_construct(void *key, void *value, Node *left, Node *right){
+Node *node_construct(void *key, void *value, Node *left, Node *right, Node* parent){
     Node* new = malloc(sizeof(Node));
     new->key = key;
     new->value = value;
     new->left = left;
     new->right = right;
+    new->parent = parent;
     return new;
 }
 
@@ -73,11 +75,11 @@ BinaryTree *binary_tree_construct(CmpFn cmp_fn, KeyDestroyFn key_destroy_fn, Val
 
 void binary_tree_add(BinaryTree *bt, void *key, void *value){
     if(bt->root == NULL){
-        bt->root = node_construct(key, value, NULL, NULL);
+        bt->root = node_construct(key, value, NULL, NULL, NULL);
         return;
     }
 
-    Node* new = node_construct(key, value, NULL, NULL);
+    Node* new = node_construct(key, value, NULL, NULL, NULL);
     Node* root = bt->root;
     Node* left = root->left;
     Node* right = root->right;
@@ -93,6 +95,7 @@ void binary_tree_add(BinaryTree *bt, void *key, void *value){
         }
         if(bt->cmp_fn(key, root->key) < 0){
             if(left == NULL){
+                new->parent = root;
                 root->left = new;
                 return;
             }
@@ -102,6 +105,7 @@ void binary_tree_add(BinaryTree *bt, void *key, void *value){
         }
         else{
             if(right == NULL){
+                new->parent = root;
                 root->right = new;
                 return;
             }
@@ -198,42 +202,111 @@ void *binary_tree_get(BinaryTree *bt, void *key){
         }
         return root->value;
     }
+    return NULL;
+}
+
+void transplant(BinaryTree *bt, Node* u, Node* v){
+    if(u->parent == NULL){
+        bt->root = v;
+    }
+    else if(u == u->parent->left){
+        u->parent->left = v;
+    }
+    else{
+        u->parent->right = v;
+    }
+    if(v != NULL){
+        v->parent = u->parent;
+    }
+}
+
+void binary_tree_delete(BinaryTree *bt, void *key){
+    Node* root = bt->root;
+    while( root != NULL ){
+        if(root == NULL){
+            return;
+        }
+        if(bt->cmp_fn(key, root->key) < 0 ){
+            root = root->left;
+            continue;
+        }
+        if(bt->cmp_fn(key, root->key) > 0 ){
+            root = root->right;
+            continue;
+        }
+        if(root->left == NULL){
+            transplant(bt, root, root->right);
+        }
+        else if(root->right == NULL){
+            transplant(bt, root, root->left);
+        }
+        else{
+            Node* y = root->right;
+            while(y->left != NULL){
+                y = y->left;
+            }
+            if(y->parent != root){
+                transplant(bt, y, y->right);
+                y->right = root->right;
+                y->right->parent = y;
+            }
+            transplant(bt, root, y);
+            y->left = root->left;
+            y->left->parent = y;
+        }
+        bt->key_destroy_fn(root->key);
+        bt->val_destroy_fn(root->value);
+        node_destroy(root);
+        return;
+    }
 }
 
 KeyValPair* binary_tree_pop_min(BinaryTree *bt){
     Node* root = bt->root;
-    Node* parent = NULL;
+    if(root == NULL){
+        return NULL;
+    }
     while(root->left != NULL){
-        parent = root;
         root = root->left;
     }
     KeyValPair* new = key_val_pair_construct(root->key, root->value);
-    node_destroy(root);
-    parent->left = NULL;
+    binary_tree_delete(bt, root->key);
     return new;
 }
 
 KeyValPair* binary_tree_pop_max(BinaryTree *bt){
     Node* root = bt->root;
-    Node* parent = NULL;
+    if(root == NULL){
+        return NULL;
+    }
     while(root->right != NULL){
-        parent = root;
         root = root->right;
     }
     KeyValPair* new = key_val_pair_construct(root->key, root->value);
-    node_destroy(root);
-    parent->right = NULL;
+    binary_tree_delete(bt, root->key);
     return new;
 }
 
-void binary_tree_destroy(BinaryTree *bt){
-    
+
+void binary_tree_destroy_recursuive(Node* node, KeyDestroyFn key_destroy_fn, ValDestroyFn val_destroy_fn){
+    if(node == NULL) return;
+
+    binary_tree_destroy_recursuive(node->left, key_destroy_fn, val_destroy_fn);
+    binary_tree_destroy_recursuive(node->right, key_destroy_fn, val_destroy_fn);
+
+    key_destroy_fn(node->key);
+    val_destroy_fn(node->value);
+    node_destroy(node);
 }
+
+void binary_tree_destroy(BinaryTree *bt){
+    if(bt->root == NULL) return;
+    binary_tree_destroy_recursuive(bt->root,  bt->key_destroy_fn,  bt->val_destroy_fn);
+    free(bt);
+}
+
+
 /*
-void binary_tree_remove(BinaryTree *bt, void *key);
-
-
-
 Vector *binary_tree_inorder_traversal(BinaryTree *bt);
 Vector *binary_tree_preorder_traversal(BinaryTree *bt);
 Vector *binary_tree_postorder_traversal(BinaryTree *bt);

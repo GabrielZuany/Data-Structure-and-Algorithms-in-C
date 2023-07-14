@@ -1,7 +1,7 @@
 #ifndef _BINARY_TREE_H_
 #define _BINARY_TREE_H_
 
-#include "../02_Vector/vector.h"
+#include "vector.h"
 
 typedef int (*CmpFn)(void *, void *);
 typedef void (*KeyDestroyFn)(void *);
@@ -16,7 +16,7 @@ void key_val_pair_destroy(KeyValPair *kv, KeyDestroyFn key_destroy_fn, ValDestro
 void *key_val_pair_get_key(KeyValPair *kvp);
 void *key_val_pair_get_val(KeyValPair *kvp);
 
-Node *node_construct(void *key, void *value, Node *left, Node *right);
+Node *node_construct(void *key, void *value, Node *left, Node *right, Node* parent);
 void node_destroy(Node *node);
 
 BinaryTree *binary_tree_construct(
@@ -34,6 +34,7 @@ KeyValPair* binary_tree_max(BinaryTree *bt);
 void *binary_tree_get(BinaryTree *bt, void *key);
 KeyValPair* binary_tree_pop_min(BinaryTree *bt);
 KeyValPair* binary_tree_pop_max(BinaryTree *bt);
+void binary_tree_delete(BinaryTree *bt, void *key);
 void binary_tree_destroy(BinaryTree *bt);
 /*
 void binary_tree_remove(BinaryTree *bt, void *key);
