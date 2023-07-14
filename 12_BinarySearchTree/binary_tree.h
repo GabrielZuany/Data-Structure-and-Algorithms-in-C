@@ -36,17 +36,19 @@ KeyValPair* binary_tree_pop_min(BinaryTree *bt);
 KeyValPair* binary_tree_pop_max(BinaryTree *bt);
 void binary_tree_delete(BinaryTree *bt, void *key);
 void binary_tree_destroy(BinaryTree *bt);
-/*
-void binary_tree_remove(BinaryTree *bt, void *key);
-
-
-Vector *binary_tree_inorder_traversal(BinaryTree *bt);
+Vector* inorder_recursive(Node* root, Vector* vec);
+Vector *binary_tree_inorder_traversal_recursive(BinaryTree *bt);
+Vector *binary_tree_preorder_traversal_recursive(BinaryTree *bt);
 Vector *binary_tree_preorder_traversal(BinaryTree *bt);
+
+Vector *binary_tree_postorder_traversal_recursive(BinaryTree *bt);
+Vector *binary_tree_postorder_traversal(BinaryTree *bt);
+Vector *binary_tree_levelorder_traversal(BinaryTree *bt);
+/*
+
 Vector *binary_tree_postorder_traversal(BinaryTree *bt);
 Vector *binary_tree_levelorder_traversal(BinaryTree *bt);
 
-Vector *binary_tree_inorder_traversal_recursive(BinaryTree *bt);
-Vector *binary_tree_preorder_traversal_recursive(BinaryTree *bt);
 Vector *binary_tree_postorder_traversal_recursive(BinaryTree *bt);*/
 
 #endif

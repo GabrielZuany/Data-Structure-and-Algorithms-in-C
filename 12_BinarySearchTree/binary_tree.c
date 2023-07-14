@@ -25,6 +25,7 @@ struct BinaryTree
     ValDestroyFn val_destroy_fn;
 };
 
+
 KeyValPair *key_val_pair_construct(void *key, void *val){
     KeyValPair* new = malloc(sizeof(KeyValPair));
     new->key = key;
@@ -287,7 +288,6 @@ KeyValPair* binary_tree_pop_max(BinaryTree *bt){
     return new;
 }
 
-
 void binary_tree_destroy_recursuive(Node* node, KeyDestroyFn key_destroy_fn, ValDestroyFn val_destroy_fn){
     if(node == NULL) return;
 
@@ -305,14 +305,111 @@ void binary_tree_destroy(BinaryTree *bt){
     free(bt);
 }
 
+Vector* inorder_recursive(Node* root, Vector* vec){
+    if(root == NULL){
+        return vec;
+    }
+    inorder_recursive(root->left, vec);
+    vector_push_back(vec, key_val_pair_construct(root->key, root->value));
+    inorder_recursive(root->right, vec);
+    return vec;
+}
 
-/*
-Vector *binary_tree_inorder_traversal(BinaryTree *bt);
-Vector *binary_tree_preorder_traversal(BinaryTree *bt);
-Vector *binary_tree_postorder_traversal(BinaryTree *bt);
-Vector *binary_tree_levelorder_traversal(BinaryTree *bt);
+// Depth-first search
+Vector *binary_tree_inorder_traversal_recursive(BinaryTree *bt){
+    Vector* vec = vector_construct();
+    inorder_recursive(bt->root, vec);
+    return vec;
+}
 
-Vector *binary_tree_inorder_traversal_recursive(BinaryTree *bt);
-Vector *binary_tree_preorder_traversal_recursive(BinaryTree *bt);
-Vector *binary_tree_postorder_traversal_recursive(BinaryTree *bt);
-*/
+Vector *binary_tree_inorder_traversal(BinaryTree *bt){
+    Vector* vec = vector_construct();
+    Vector* stack = vector_construct();
+
+    Node* root = bt->root;
+    while(1){
+        while(root != NULL){
+            vector_push_back(stack, root);
+            root = root->left;
+        }
+        if(vector_size(stack) == 0){
+            break;
+        }
+        root = vector_pop_back(stack);
+        vector_push_back(vec, key_val_pair_construct(root->key, root->value));
+        root = root->right;
+    }
+    vector_destroy(stack);
+    return vec;
+}
+
+Vector* preorder_recursive(Node* root, Vector* vec){
+    if(root == NULL){
+        return vec;
+    }
+    vector_push_back(vec, key_val_pair_construct(root->key, root->value));
+    preorder_recursive(root->left, vec);
+    preorder_recursive(root->right, vec);
+    return vec;
+}
+
+Vector *binary_tree_preorder_traversal_recursive(BinaryTree *bt){
+    Vector* vec = vector_construct();
+    preorder_recursive(bt->root, vec);
+    return vec;
+}
+
+Vector *binary_tree_preorder_traversal(BinaryTree *bt){
+    Vector* vec = vector_construct();
+    Vector* stack = vector_construct();
+
+    Node* root = bt->root;
+    while(1){
+        while(root != NULL){
+            vector_push_back(stack, root);
+            root = root->left;
+        }
+        if(vector_size(stack) == 0){
+            break;
+        }
+        root = vector_pop_front(stack);
+        vector_push_back(vec, key_val_pair_construct(root->key, root->value));
+        root = root->right;
+    }
+    vector_destroy(stack);
+    return vec;
+}
+
+Vector* postorder_recursive(Node* root, Vector* vec){
+    if(root == NULL){
+        return vec;
+    }
+    postorder_recursive(root->left, vec);
+    postorder_recursive(root->right, vec);
+    vector_push_back(vec, key_val_pair_construct(root->key, root->value));
+    return vec;
+}
+
+Vector *binary_tree_postorder_traversal_recursive(BinaryTree *bt){
+    Vector* vec = vector_construct();
+    postorder_recursive(bt->root, vec);
+    return vec;
+}
+
+int node_comparator(const void *a, const void *b) {
+    Node *nodeA = *(Node **)a;
+    Node *nodeB = *(Node **)b;
+    return nodeA->key - nodeB->key;
+}
+
+Vector *binary_tree_postorder_traversal(BinaryTree *bt) {
+    
+}
+
+
+
+// breadth-first search
+Vector *binary_tree_levelorder_traversal(BinaryTree *bt){
+
+}
+
