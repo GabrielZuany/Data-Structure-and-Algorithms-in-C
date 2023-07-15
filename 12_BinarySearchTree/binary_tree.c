@@ -403,13 +403,46 @@ int node_comparator(const void *a, const void *b) {
 }
 
 Vector *binary_tree_postorder_traversal(BinaryTree *bt) {
-    
+    Vector *v = vector_construct();
+    Stack *s = stack_construct();
+    Node *root = bt->root;
+    while (1) {
+        while (root != NULL) {
+            vector_push_back(v, key_val_pair_construct(root->key, root->value));
+            stack_push(s, root);
+            root = root->right;
+        }
+        if (stack_empty(s)) {
+            break;
+        }
+        root = stack_pop(s);
+        root = root->left;
+    }
+    stack_destroy(s);
+    vector_reverse(v);
+    return v;
 }
-
-
 
 // breadth-first search
 Vector *binary_tree_levelorder_traversal(BinaryTree *bt){
+    Vector *v = vector_construct();
+    if (bt->root == NULL){
+        return v;
+    }
 
+    Queue *q = create_queue();
+    enqueue(q, bt->root);
+
+    while(!queue_empty(q)){
+        Node *node = dequeue(q);
+        vector_push_back(v, key_val_pair_construct(node->key, node->value));
+        if (node->left != NULL){
+            enqueue(q, node->left);
+        }
+        if (node->right != NULL){
+            enqueue(q, node->right);
+        }
+    }
+    queue_destroy(q);
+    return v;
 }
-

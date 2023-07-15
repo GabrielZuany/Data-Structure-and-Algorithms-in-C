@@ -1,7 +1,0 @@
-6
-SET maria 18 2.11
-SET jose 32 1.56
-SET paulo 55 1.65
-SET almir 74 1.76
-SET naldo 43 1.89
-SET zuleide 62 1.49
