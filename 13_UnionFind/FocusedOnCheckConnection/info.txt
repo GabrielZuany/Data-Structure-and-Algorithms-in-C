@@ -1,0 +1,51 @@
+id array
+
+obj{
+    id;
+    data;
+    numeric_value;
+}
+
+criar conexao:
+    -> iteramos sobre o array e alterando todos os numeric_value cujo valor é igual ao da célula da direita (selecionada).
+    -> se 2 objetos possuirem o mesmo numeric_value então estão conectados.
+
+    EX:
+        [0]obj1 {xxxx; (email, cpf,...); 33}
+        [1]obj2 {yyyy; (email, cpf,...); 54}
+        [2]obj3 {zzzz; (email, cpf,...); 12}
+        [3]obj4 {wwww; (email, cpf,...); 75}
+
+        connect(0,1):
+        ----->  obj1 {xxxx; (email, cpf,...); 33}
+        ----->  obj2 {yyyy; (email, cpf,...); 33}
+                obj3 {zzzz; (email, cpf,...); 12}
+                obj4 {wwww; (email, cpf,...); 75}
+
+                * Célula da direita: idx[1] => numeric_value = 54
+                * Itera buscando os 54 e alterando para 33 (numeric_value do idx[0])
+
+        connect(2,3):
+                obj1 {xxxx; (email, cpf,...); 33}
+                obj2 {yyyy; (email, cpf,...); 33}
+        ----->  obj3 {zzzz; (email, cpf,...); 12}
+        ----->  obj4 {wwww; (email, cpf,...); 12}
+
+                * Célula da direita: idx[3] => numeric_value = 75
+                * Itera buscando os 75 e alterando para 12 (numeric_value do idx[3])
+        
+        connect(1,2):
+        ----->  obj1 {xxxx; (email, cpf,...); 33}
+                obj2 {yyyy; (email, cpf,...); 33}
+        ----->  obj3 {zzzz; (email, cpf,...); 33}
+                obj4 {wwww; (email, cpf,...); 33}
+
+                * Célula da direita: idx[2] => numeric_value = 12
+                * Itera buscando os 12 e alterando para 33 (numeric_value do idx[0])
+
+    
+    >>> Logo, todos os valores que são iguais possuem uma conexão. No nosso caso, todos os itens estão ligados.
+    >>> Numa representação real, poderiamos dizer que as pessoas com esses dados estão ligadas (não importando a relação em si, apenas que estão ligadas). 
+    >>> Como uma rede social.
+    >>> Essa forma de implementação possui menos desempenho ao criar uma conexao.
+    >>> Para verificar se dois nós estão conectados é constante (basta recuperar o numeric_value de ambos e verificar se são iguais).
