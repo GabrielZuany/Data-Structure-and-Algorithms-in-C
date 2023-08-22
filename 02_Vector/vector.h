@@ -1,6 +1,6 @@
 #ifndef VECTOR_H
 #define VECTOR_H
-#define INITIAL_CAPACITY 10
+#define INITIAL_CAPACITY 20
 
 /**
  * @brief Vector data structure.

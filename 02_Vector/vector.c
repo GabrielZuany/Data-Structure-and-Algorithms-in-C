@@ -27,8 +27,8 @@ void vector_push_back(Vector *v, void* val) {
   int allocated = v->allocated;
 
   if (allocated == size) {
+    v->data = realloc(v->data, sizeof(void *) * allocated * 2);
     v->allocated *= 2;
-    v->data = realloc(v->data, sizeof(void *) * allocated);
   }
 
   v->data[size] = val;
@@ -40,6 +40,9 @@ int vector_size(Vector *v) {
 }
 
 void* vector_get(Vector *v, int i) {
+    if(i >= vector_size(v) || i < 0){
+        return NULL;
+    }
     return *(v->data + i); 
 }
 
@@ -66,7 +69,11 @@ void* vector_remove(Vector *v, int i){
   void* val = *(v->data+i);
 
   for(count=i; count<size; count++){
-    *(v->data+count) = *(v->data+count+1);
+    if(count == size-1)
+      *(v->data+count) = NULL;
+    else
+      *(v->data+count) = *(v->data+count+1);
+
   }
   v->size--;
   return val;
@@ -201,7 +208,10 @@ void vector_print(Vector *v, void (*printfn)(void*)){
   int count = 0, size = vector_size(v);
 
   for(count=0; count<size; count++){
-    printfn(*(v->data+count));
+    if(printfn != NULL)
+      printfn(*(v->data+count));
+    else
+      printf("NULL");
   }
   printf("\n");
 }
