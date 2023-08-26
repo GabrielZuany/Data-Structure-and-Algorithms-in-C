@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "union_find.h"
+#include "qf_union_find.h"
 
 struct UnionFind
 {

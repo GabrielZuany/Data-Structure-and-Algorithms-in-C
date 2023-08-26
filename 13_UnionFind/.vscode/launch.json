@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/zuany/LinuxWorkEnvironmnet/Data-Structure-and-Algorithms-in-C/16_Dijkstras_2-Stack",
-      "program": "/home/zuany/LinuxWorkEnvironmnet/Data-Structure-and-Algorithms-in-C/16_Dijkstras_2-Stack/main",
+      "cwd": "/home/zuany/LinuxWorkEnvironmnet/Data-Structure-and-Algorithms-in-C/13_UnionFind",
+      "program": "/home/zuany/LinuxWorkEnvironmnet/Data-Structure-and-Algorithms-in-C/13_UnionFind/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
