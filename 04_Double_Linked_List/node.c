@@ -17,6 +17,9 @@ Node *node_construct(void* value, Node *next, Node *prev){
 }
 
 void* node_get_data(Node *n){
+    if(n == NULL){
+        return NULL;
+    }
     return n->value;
 }
 
@@ -25,6 +28,9 @@ Node *node_get_next(Node *n){
 }
 
 Node *node_get_prev(Node *n){
+    if(n == NULL){
+        return NULL;
+    }
     return n->prev;
 }
 
@@ -41,6 +47,9 @@ void node_set_prev(Node *n, Node *prev){
 }
 
 void node_destroy(Node *n){
+    if (n==NULL){
+        return;
+    }
     free(n);
 }
 

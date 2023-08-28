@@ -121,7 +121,8 @@ void* list_pop_back(List *l){
     Node* reference = node_get_prev(l->last);
     void* val = node_get_data(l->last);
     
-    free(l->last);
+    if(l->last != NULL)
+        node_destroy(l->last);
 
     l->last = reference;
     if(l->last != NULL)
@@ -175,6 +176,7 @@ void list_cat(List *l, List *m){
 }
 
 void list_destroy(List *l){
+    if(l == NULL) return;
     node_destroy_recursive(l->head);
     free(l);
 }

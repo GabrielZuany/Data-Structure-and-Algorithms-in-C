@@ -31,6 +31,7 @@ int stack_empty(Stack *s){
 }
 
 void stack_destroy(Stack *s){
+    if(s == NULL) return;
     list_destroy(s->list);
     free(s);
 }
