@@ -13,11 +13,12 @@ typedef int (*compare_t)(Key, Key);
 /**
  * @brief Create a RBT object
  * 
+ * @param compare_func function to compare the keys
  * @return RBT* 
  * 
  * @note Complexity: O(1)
  */
-RBT *RBinit();
+RBT *RBinit(compare_t compare_func);
 
 /**
  * @brief Insert a new node into the tree
